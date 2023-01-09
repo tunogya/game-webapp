@@ -4,7 +4,11 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start((ctx) => {
   try {
-    ctx.reply("Welcome!")
+    ctx.replyWithMarkdown(`*Welcome to WizardingPay*
+    
+Games:
+- /dune, Mint Spices on Arrakis dune!
+`)
   } catch (e) {
     console.log(e)
   }
