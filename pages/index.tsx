@@ -7,11 +7,13 @@ export default function Home() {
   const [initParams, setInitParams] = useState();
 
   useEffect(() => {
-    // @ts-ignore
-    if (window?.TelegramGameProxy) {
+    setInterval(() => {
       // @ts-ignore
-      setInitParams(window?.TelegramGameProxy?.initParams)
-    }
+      if (window?.TelegramGameProxy) {
+        // @ts-ignore
+        setInitParams(window?.TelegramGameProxy?.initParams)
+      }
+    }, 1000)
   }, [])
 
   return (
