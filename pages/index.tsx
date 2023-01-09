@@ -11,7 +11,7 @@ export default function Home() {
       // @ts-ignore
       if (window?.TelegramGameProxy) {
         // @ts-ignore
-        setInitParams(window?.TelegramGameProxy?.initParams)
+        setInitParams(window?.TelegramGameProxy)
       }
     }, 1000)
   }, [])
