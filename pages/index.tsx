@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import {Avatar, Button, Heading, HStack, Spacer, Stack, Text} from "@chakra-ui/react";
+import {Avatar, Button, HStack, Spacer, Stack, Text} from "@chakra-ui/react";
 import {ChevronRightIcon} from "@chakra-ui/icons";
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Stack p={3}>
-        <Heading fontSize={'16px'}>Arrakis Dune</Heading>
+        <Text fontSize={'16px'} fontWeight={'bold'}>Arrakis Dune</Text>
         <HStack justifyContent={"space-between"}>
           <HStack spacing={3} borderRadius={'full'} bg={'#E9F9F7'}>
             <Avatar border={'2px solid white'} name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
@@ -40,13 +40,13 @@ export default function Home() {
 
       <Stack p={3}>
         <HStack justifyContent={"space-between"}>
-          <Heading fontSize={'16px'}>Latest</Heading>
+          <Text fontSize={'16px'} fontWeight={'bold'}>Latest</Text>
           <Text>All <ChevronRightIcon/></Text>
         </HStack>
-        <HStack justifyContent={'space-between'}>
+        <HStack justifyContent={'space-between'} p={3}>
           <HStack>
             <Stack spacing={-2} textAlign={"center"}>
-              <Text fontSize={'18px'} fontWeight={'semibold'}>Today</Text>
+              <Text fontSize={'16px'} fontWeight={'semibold'}>Today</Text>
               <Text fontSize={'14px'}>receive</Text>
             </Stack>
             <Text fontSize={'24px'} fontWeight={'semibold'}>300g</Text>
@@ -70,7 +70,7 @@ export default function Home() {
 
       <Stack p={3}>
         <HStack>
-          <Heading fontSize={'16px'}>State</Heading>
+          <Text fontSize={'16px'} fontWeight={'bold'}>State</Text>
           <Spacer/>
           <HStack fontSize={'12px'}>
             <Text>Day</Text>
