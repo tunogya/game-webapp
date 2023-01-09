@@ -1,8 +1,19 @@
 import Head from 'next/head'
-import {Avatar, Button, HStack, Spacer, Stack, Text} from "@chakra-ui/react";
+import {Avatar, Button, Code, HStack, Spacer, Stack, Text} from "@chakra-ui/react";
 import {ChevronRightIcon} from "@chakra-ui/icons";
+import {useEffect, useState} from "react";
 
 export default function Home() {
+  const [initParams, setInitParams] = useState();
+
+  useEffect(() => {
+    // @ts-ignore
+    if (window?.TelegramGameProxy) {
+      // @ts-ignore
+      setInitParams(window?.TelegramGameProxy?.initParams)
+    }
+  }, [])
+
   return (
     <Stack maxW={'container.sm'} w={'full'}>
       <Head>
@@ -17,7 +28,7 @@ export default function Home() {
           <HStack spacing={3} borderRadius={'full'} bg={'#E9F9F7'}>
             <Avatar border={'2px solid white'} name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
             <Stack spacing={0} pr={8}>
-              <Text fontSize={'14px'} fontWeight={'bold'}>tunogya</Text>
+              <Text fontSize={'14px'} fontWeight={'bold'}>@tunogya</Text>
               <Text fontSize={'12px'}>Level 6</Text>
             </Stack>
           </HStack>
@@ -29,6 +40,9 @@ export default function Home() {
             </Stack>
           </HStack>
         </HStack>
+        <Code>
+          {JSON.stringify(initParams, null, 2)}
+        </Code>
         <Stack h={'700px'} w={'full'}>
           <Stack position={'relative'} top={'50px'} left={'240px'} spacing={0} borderRadius={'full'} bg={'#BFD5A3'} w={'48px'} h={'48px'} alignItems={"center"} justify={"center"}>
             <Text fontSize={'10px'}>Left</Text>
