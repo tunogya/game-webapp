@@ -2,10 +2,13 @@ import Head from 'next/head'
 import {Avatar, Button, Code, HStack, Spacer, Stack, Text} from "@chakra-ui/react";
 import {ChevronRightIcon} from "@chakra-ui/icons";
 import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
 
 export default function Home() {
   const [initParams, setInitParams] = useState();
-
+  const router = useRouter();
+  const { userId } = router.query;
+  
   useEffect(() => {
     setInterval(() => {
       // @ts-ignore
@@ -25,7 +28,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Stack p={3}>
-        <Text fontSize={'16px'} fontWeight={'bold'}>Arrakis Dune</Text>
         <HStack justifyContent={"space-between"}>
           <HStack spacing={3} borderRadius={'full'} bg={'#E9F9F7'}>
             <Avatar border={'2px solid white'} name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
