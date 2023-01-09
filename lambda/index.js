@@ -28,7 +28,7 @@ bot.command("dune", (ctx) => {
 bot.gameQuery((ctx) => {
   try {
     const game_short_name = ctx.update.callback_query.game_short_name;
-    ctx.answerGameQuery(`https://${game_short_name}.game.wizardingpay.com`)
+    ctx.answerGameQuery(`https://${game_short_name}.game.wizardingpay.com?userId=${ctx.update.callback_query.from.id}`);
   } catch (e) {
     console.log(e)
   }

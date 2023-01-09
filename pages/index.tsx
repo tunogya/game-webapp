@@ -8,13 +8,14 @@ export default function Home() {
   const [initParams, setInitParams] = useState();
   const router = useRouter();
   const { userId } = router.query;
-  
+
   useEffect(() => {
     setInterval(() => {
       // @ts-ignore
       if (window?.TelegramGameProxy) {
         // @ts-ignore
         setInitParams(window?.TelegramGameProxy)
+        // { "initParams": { "tgShareScoreUrl": "tg://share_game_score?hash=lpfSu8MINrh3d15GTnzJx1LCV-zickoRs0PQTeFNgYV6OFJRVgv9qgnYTQdi0ydM" } }
       }
     }, 1000)
   }, [])
