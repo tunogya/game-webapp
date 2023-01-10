@@ -67,14 +67,14 @@ export default function Home() {
       <Stack p={3}>
         <HStack justifyContent={"space-between"}>
           <HStack spacing={3} borderRadius={'full'} bg={'#E9F9F7'}>
-            <Avatar border={'2px solid white'} name='User' src={user.avatar_url} />
+            <Avatar border={'2px solid white'} name={user.username || user.first_name || user.last_name || '-'} src={user.avatar_url} />
             <Stack spacing={0} pr={8}>
               <Text fontSize={'14px'} fontWeight={'bold'}>{user.username ? `@${user.username}` : '-'}</Text>
               <Text fontSize={'12px'}>Level {user.level}</Text>
             </Stack>
           </HStack>
           <HStack spacing={3} borderRadius={'full'} bg={'#E9F9F7'}>
-            <Avatar border={'2px solid white'} name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
+            <Stack w={'44px'} h={'44px'}></Stack>
             <Stack spacing={0} pr={8}>
               <Text fontSize={'14px'} fontWeight={'bold'}>Spice</Text>
               <Text fontSize={'12px'}>{user.balance}g</Text>
