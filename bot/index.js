@@ -74,6 +74,7 @@ Games:
           first_name: ctx.from.first_name,
           last_name: ctx.from.last_name,
           username: ctx.from.username,
+          create_at: Math.floor(Date.now() / 1000),
         }
       })).then((res) => {
         console.log(res)
