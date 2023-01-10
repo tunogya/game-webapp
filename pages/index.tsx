@@ -1,24 +1,60 @@
 import Head from 'next/head'
-import {Avatar, Button, Code, HStack, Spacer, Stack, Text} from "@chakra-ui/react";
+import {Avatar, Button, HStack, Spacer, Stack, Text} from "@chakra-ui/react";
 import {ChevronRightIcon} from "@chakra-ui/icons";
-import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
+import {useCallback, useEffect, useState} from "react";
+import axios from "axios";
 
 export default function Home() {
-  const [initParams, setInitParams] = useState();
   const router = useRouter();
+  const [user, setUser] = useState<{
+    username: string,
+    first_name: string,
+    last_name: string,
+    avatar_url: string,
+    balance: number,
+    level: number,
+  }>({
+    username: '',
+    first_name: '',
+    last_name: '',
+    avatar_url: '',
+    balance: 0,
+    level: 1,
+  });
   const { userId } = router.query;
 
+  const getUserInfo = useCallback(async () => {
+    if (!userId) {
+      return
+    }
+    try {
+      const res = await Promise.all([
+        axios({
+          method: 'get',
+          url: `https://tsxzkf7krxbgj5cbqmhbwgbni40couxa.lambda-url.ap-northeast-1.on.aws/?userId=${userId}`,
+        }),
+        axios({
+          method: 'get',
+          url: `https://dcelk3jpf4neqyx52usmjar5x40fxvqw.lambda-url.ap-northeast-1.on.aws/?userId=${userId}`,
+        })
+      ])
+      setUser({
+        username: res[0].data.username,
+        first_name: res[0].data.first_name,
+        last_name: res[0].data.last_name,
+        avatar_url: `https://wizardingpay.s3.ap-northeast-1.amazonaws.com/avatar/${userId}.jpg`,
+        balance: res[1].data.balance,
+        level: res[1].data.level,
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }, [userId])
+
   useEffect(() => {
-    setInterval(() => {
-      // @ts-ignore
-      if (window?.TelegramGameProxy) {
-        // @ts-ignore
-        setInitParams(window?.TelegramGameProxy)
-        // { "initParams": { "tgShareScoreUrl": "tg://share_game_score?hash=lpfSu8MINrh3d15GTnzJx1LCV-zickoRs0PQTeFNgYV6OFJRVgv9qgnYTQdi0ydM" } }
-      }
-    }, 1000)
-  }, [])
+    getUserInfo();
+  }, [getUserInfo])
 
   return (
     <Stack maxW={'container.sm'} w={'full'}>
@@ -31,23 +67,20 @@ export default function Home() {
       <Stack p={3}>
         <HStack justifyContent={"space-between"}>
           <HStack spacing={3} borderRadius={'full'} bg={'#E9F9F7'}>
-            <Avatar border={'2px solid white'} name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
+            <Avatar border={'2px solid white'} name='User' src={user.avatar_url} />
             <Stack spacing={0} pr={8}>
-              <Text fontSize={'14px'} fontWeight={'bold'}>@tunogya</Text>
-              <Text fontSize={'12px'}>Level 6</Text>
+              <Text fontSize={'14px'} fontWeight={'bold'}>{user.username ? `@${user.username}` : '-'}</Text>
+              <Text fontSize={'12px'}>Level {user.level}</Text>
             </Stack>
           </HStack>
           <HStack spacing={3} borderRadius={'full'} bg={'#E9F9F7'}>
             <Avatar border={'2px solid white'} name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
             <Stack spacing={0} pr={8}>
               <Text fontSize={'14px'} fontWeight={'bold'}>Spice</Text>
-              <Text fontSize={'12px'}>277g</Text>
+              <Text fontSize={'12px'}>{user.balance}g</Text>
             </Stack>
           </HStack>
         </HStack>
-        <Code>
-          {JSON.stringify(initParams, null, 2)}
-        </Code>
         <Stack h={'700px'} w={'full'}>
           <Stack position={'relative'} top={'50px'} left={'240px'} spacing={0} borderRadius={'full'} bg={'#BFD5A3'} w={'48px'} h={'48px'} alignItems={"center"} justify={"center"}>
             <Text fontSize={'10px'}>Left</Text>
