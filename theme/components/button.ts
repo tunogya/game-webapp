@@ -3,7 +3,7 @@ import { defineStyleConfig } from '@chakra-ui/react'
 const Button = defineStyleConfig({
   baseStyle: {
     fontWeight: 'bold',
-    textTransform: 'uppercase',
+    // textTransform: 'uppercase',
     borderRadius: 'base',
   },
   sizes: {
