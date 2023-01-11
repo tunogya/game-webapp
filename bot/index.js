@@ -103,7 +103,7 @@ bot.command("dune", (ctx) => {
 
 bot.command("link", (ctx) => {
   ctx.reply("Please enter the webapp to link wallet:", Markup.inlineKeyboard([
-    Markup.button.webApp("Link Wallet", `https://game.wizardingpay.com/link/?userId=${ctx.update.callback_query.from.id}`)
+    Markup.button.webApp("Link Wallet", `https://game.wizardingpay.com/link/?userId=${ctx.from.id}`)
   ]))
 })
 
