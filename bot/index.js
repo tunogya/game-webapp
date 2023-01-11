@@ -1,7 +1,7 @@
 const {Telegraf, Markup} = require("telegraf");
 const {S3Client, PutObjectCommand} = require("@aws-sdk/client-s3");
 const axios = require("axios");
-const {PutCommand, DynamoDBDocumentClient, UpdateCommand, GetCommand} = require('@aws-sdk/lib-dynamodb');
+const {PutCommand, DynamoDBDocumentClient, GetCommand} = require('@aws-sdk/lib-dynamodb');
 const {DynamoDBClient} = require('@aws-sdk/client-dynamodb');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -26,7 +26,10 @@ bot.start(async (ctx) => {
     ctx.replyWithMarkdown(`*Welcome to WizardingPay*
     
 Games:
-- /dune, Mint Spices on Arrakis dune!
+- /dune, Mint Spice on Arrakis dune!
+
+Wallet:
+- /link, Link your wallet
 `)
     const userRes = await ddbDocClient.send(new GetCommand({
       TableName: 'wizardingpay',
@@ -91,17 +94,23 @@ bot.command("dune", (ctx) => {
   try {
     ctx.replyWithGame('dune', Markup.inlineKeyboard([
       Markup.button.game("Play Solo"),
-      Markup.button.url("Github", "https://github.com/tunogya/arrakis-dune")
+      Markup.button.url("Github", "https://github.com/tunogya/wizardingpay-game-webapp")
     ]))
   } catch (e) {
     console.log(e);
   }
 });
 
+bot.command("link", (ctx) => {
+  ctx.reply("Please enter the webapp to link wallet:", Markup.inlineKeyboard([
+    Markup.button.webApp("Link Wallet", `https://game.wizardingpay.com/link/?userId=${ctx.update.callback_query.from.id}`)
+  ]))
+})
+
 bot.gameQuery((ctx) => {
   try {
     const game_short_name = ctx.update.callback_query.game_short_name;
-    ctx.answerGameQuery(`https://${game_short_name}.game.wizardingpay.com?userId=${ctx.update.callback_query.from.id}`);
+    ctx.answerGameQuery(`https://game.wizardingpay.com/${game_short_name}/?userId=${ctx.update.callback_query.from.id}`);
   } catch (e) {
     console.log(e)
   }
