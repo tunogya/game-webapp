@@ -20,6 +20,23 @@ export default function Link() {
   const toast = useToast()
   const [wallet, setWallet] = useState<string[]>([]);
 
+  const getWallet = useCallback(async () => {
+    if (!userId) {
+      return
+    }
+    try {
+      const res = await axios({
+        method: 'get',
+        url: `https://wggmo6xpdtuaa3ovkmcl5cm5lm0tsodx.lambda-url.ap-northeast-1.on.aws/?userId=${userId}`,
+      })
+      if (res.data) {
+        setWallet(res.data.wallet)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }, [userId])
+
   const postMessage = useCallback(async () => {
     const res = await axios({
       method: 'post',
@@ -46,24 +63,7 @@ export default function Link() {
         description: "Some error occurred, please try again later.",
       })
     }
-  }, [address, data, message, toast, userId])
-
-  const getWallet = useCallback(async () => {
-    if (!userId) {
-      return
-    }
-    try {
-      const res = await axios({
-        method: 'get',
-        url: `https://wggmo6xpdtuaa3ovkmcl5cm5lm0tsodx.lambda-url.ap-northeast-1.on.aws/?userId=${userId}`,
-      })
-      if (res.data) {
-        setWallet(res.data.wallet)
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }, [userId])
+  }, [address, data, getWallet, message, toast, userId])
 
   useEffect(() => {
     getWallet();
