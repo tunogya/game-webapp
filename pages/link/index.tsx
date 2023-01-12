@@ -27,7 +27,7 @@ export default function Link() {
     try {
       const res = await axios({
         method: 'get',
-        url: `https://wggmo6xpdtuaa3ovkmcl5cm5lm0tsodx.lambda-url.ap-northeast-1.on.aws/?userId=${userId}`,
+        url: `https://api.wizardingpay.com/tg/wallet?userId=${userId}`,
       })
       if (res.data) {
         setWallet(res.data.wallet)
@@ -40,7 +40,7 @@ export default function Link() {
   const postMessage = useCallback(async () => {
     const res = await axios({
       method: 'post',
-      url: `https://wggmo6xpdtuaa3ovkmcl5cm5lm0tsodx.lambda-url.ap-northeast-1.on.aws/?userId=${userId}`,
+      url: `https://api.wizardingpay.com/tg/wallet?userId=${userId}`,
       data: {
         message: message,
         sign: data,

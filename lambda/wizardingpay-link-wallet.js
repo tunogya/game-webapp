@@ -1,4 +1,4 @@
-const {DynamoDBDocumentClient, QueryCommand, PutCommand} = require('@aws-sdk/lib-dynamodb');
+const {DynamoDBDocumentClient, QueryCommand, PutCommand, DeleteCommand} = require('@aws-sdk/lib-dynamodb');
 const {DynamoDBClient} = require('@aws-sdk/client-dynamodb');
 const {ethers} = require("ethers");
 
@@ -86,6 +86,49 @@ exports.handler = async (event) => {
             PK: `TG-USER#${userId}`,
             SK: `ETH#${address.toLowerCase()}`,
             create_at: Math.floor(Date.now() / 1000),
+          }
+        }))
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            address: address
+          })
+        }
+      } catch (e) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            error: e
+          })
+        }
+      }
+    }
+  }
+  
+  if (event.requestContext.http.method === 'DELETE') {
+    const message = JSON.parse(event.body).message
+    const sign = JSON.parse(event.body).sign
+    const address = JSON.parse(event.body).address
+    
+    const r = sign.slice(0, 66)
+    const s = "0x" + sign.slice(66, 130)
+    const v = parseInt("0x" + sign.slice(130, 132), 16)
+    
+    const verifySigner = ethers.utils.verifyMessage(message, {r: r, s: s, v: v});
+    if (verifySigner !== address) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          error: 'sign is not valid'
+        })
+      }
+    } else {
+      try {
+        await ddbDocClient.send(new DeleteCommand({
+          TableName: 'wizardingpay',
+          Key: {
+            PK: `TG-USER#${userId}`,
+            SK: `ETH#${address.toLowerCase()}`,
           }
         }))
         return {

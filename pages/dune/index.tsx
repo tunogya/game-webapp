@@ -20,7 +20,7 @@ export default function Home() {
     try {
       const res = await axios({
         method: 'get',
-        url: `https://dcelk3jpf4neqyx52usmjar5x40fxvqw.lambda-url.ap-northeast-1.on.aws/?userId=${userId}`,
+        url: `https://api.wizardingpay.com/game/dune?userId=${userId}`,
       })
       if (res.data) {
         setState({
