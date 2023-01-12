@@ -4,18 +4,15 @@ import {useAccount, useSignMessage} from 'wagmi'
 import axios from "axios";
 import {useRouter} from "next/router";
 import useTelegramUser from "../../hooks/useTelegramUser";
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 export default function Link() {
   const {address} = useAccount();
   const router = useRouter();
   const {userId} = router.query;
   const {user} = useTelegramUser(userId);
-  const message = useMemo(() => {
-    return `I want to link my wallet to this Telegram account: @${user.username}.`;
-  }, [user.username])
   const {data, isError, isLoading, isSuccess, signMessage} = useSignMessage({
-    message: message,
+    message: `I want to link my wallet to this Telegram account: @${user.username}.`,
   });
   const toast = useToast()
   const [wallet, setWallet] = useState<string[]>([]);
@@ -37,25 +34,34 @@ export default function Link() {
     }
   }, [userId])
 
-  const postMessage = useCallback(async () => {
-    const res = await axios({
-      method: 'post',
-      url: `https://api.wizardingpay.com/tg/wallet?userId=${userId}`,
-      data: {
-        message: message,
-        sign: data,
-        address: address,
-      }
-    })
-    if (res.data?.address?.toLowerCase() === address?.toLowerCase()) {
-      await getWallet();
-      toast({
-        title: "Success",
-        status: "success",
-        variant: "subtle",
-        description: "Your wallet is linked success!",
+  const linkWallet = useCallback(async () => {
+    try {
+      const res = await axios({
+        method: 'post',
+        url: `https://api.wizardingpay.com/tg/wallet?userId=${userId}`,
+        data: {
+          message: `I want to link my wallet to this Telegram account: @${user.username}.`,
+          sign: data,
+          address: address,
+        }
       })
-    } else {
+      if (res.data?.address?.toLowerCase() === address?.toLowerCase()) {
+        await getWallet();
+        toast({
+          title: "Success",
+          status: "success",
+          variant: "subtle",
+          description: "Your wallet is linked success!",
+        })
+      } else {
+        toast({
+          title: "Error",
+          status: "error",
+          variant: "subtle",
+          description: "Some error occurred, please try again later.",
+        })
+      }
+    } catch (e) {
       toast({
         title: "Error",
         status: "error",
@@ -63,7 +69,7 @@ export default function Link() {
         description: "Some error occurred, please try again later.",
       })
     }
-  }, [address, data, getWallet, message, toast, userId])
+  }, [userId, user.username, data, address, getWallet, toast])
 
   useEffect(() => {
     getWallet();
@@ -71,7 +77,7 @@ export default function Link() {
 
   useEffect(() => {
     if (isSuccess) {
-      postMessage();
+      linkWallet();
     }
     if (isError) {
       toast({
@@ -81,7 +87,7 @@ export default function Link() {
         description: "Some error occurred, please try again later.",
       })
     }
-  }, [isError, isSuccess, postMessage, toast])
+  }, [isError, isSuccess, linkWallet, toast])
 
   return (
     <Stack maxW={'container.sm'} w={'full'} p={3}>
@@ -91,18 +97,20 @@ export default function Link() {
                 src={user.avatar_url}/>
         <ConnectButton/>
       </HStack>
-      <Stack py={20}>
-        <Button onClick={async () => signMessage?.()} isLoading={isLoading}>
-          Link new wallet
-        </Button>
-      </Stack>
+      { address && (
+        <Stack py={20}>
+          <Button onClick={async () => signMessage?.()} isLoading={isLoading}>
+            Link new wallet
+          </Button>
+        </Stack>
+      ) }
       <Stack>
         <Text fontWeight={'bold'}>My linked wallets</Text>
       </Stack>
       <Stack>
         {
           wallet.map((address, index) => (
-            <Text key={index} fontSize={'sm'}>{address}</Text>
+            <li key={index}>{address.slice(0, 6)}...{address.slice(-4)}</li>
           ))
         }
       </Stack>
