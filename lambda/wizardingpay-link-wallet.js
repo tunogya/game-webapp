@@ -17,9 +17,12 @@ exports.handler = async (event) => {
   
   if (!userId) {
     return {
-      statusCode: 200,
+      statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        error: 'userId is required'
+        message: 'userId is required'
       })
     }
   }
@@ -48,9 +51,12 @@ exports.handler = async (event) => {
       };
     } catch (e) {
       return {
-        statusCode: 200,
+        statusCode: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          error: e,
+          message: e,
         })
       }
     }
@@ -70,15 +76,21 @@ exports.handler = async (event) => {
       }))
       return {
         statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           address: address
         })
       }
     } catch (e) {
       return {
-        statusCode: 200,
+        statusCode: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          error: e
+          message: e
         })
       }
     }
@@ -97,15 +109,21 @@ exports.handler = async (event) => {
       }))
       return {
         statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           address: address
         })
       }
     } catch (e) {
       return {
-        statusCode: 200,
+        statusCode: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          error: e
+          message: e
         })
       }
     }

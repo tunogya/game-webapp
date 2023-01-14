@@ -1,7 +1,7 @@
 const fs = require("fs");
 const jose = require("node-jose");
 
-exports.handler = async (event) => {
+exports.handler = async () => {
   try {
     const keyStore = fs.readFileSync("Keys.json");
     const result = await jose.JWK.asKeyStore(keyStore.toString())
@@ -14,7 +14,7 @@ exports.handler = async (event) => {
     }
   } catch (e) {
     return {
-      statusCode: 200,
+      statusCode: 500,
       headers: {
         "Content-Type": "application/json",
       },

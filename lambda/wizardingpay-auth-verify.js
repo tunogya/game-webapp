@@ -16,6 +16,9 @@ exports.handler = async (event) => {
     if (payload.exp < Math.floor(Date.now() / 1000)) {
       return {
         statusCode: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: false,
       };
     }
@@ -23,18 +26,27 @@ exports.handler = async (event) => {
     if (payload.iat > Math.floor(Date.now() / 1000)) {
       return {
         statusCode: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: false,
       };
     }
     
     return {
       statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: true,
     }
   } catch (e) {
     return {
       statusCode: 500,
-      body: e.toString(),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: false,
     };
   }
 }

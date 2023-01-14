@@ -5,12 +5,12 @@ const jose = require("node-jose");
 exports.handler = async (event) => {
   try {
     const message = JSON.parse(event.body).message
-    const sign = JSON.parse(event.body).sign
+    const signature = JSON.parse(event.body).signature
     const address = JSON.parse(event.body).address
   
-    const r = sign.slice(0, 66)
-    const s = "0x" + sign.slice(66, 130)
-    const v = parseInt("0x" + sign.slice(130, 132), 16)
+    const r = signature.slice(0, 66)
+    const s = "0x" + signature.slice(66, 130)
+    const v = parseInt("0x" + signature.slice(130, 132), 16)
   
     const verifySigner = ethers.utils.verifyMessage(message, {
       r: r,
@@ -19,9 +19,9 @@ exports.handler = async (event) => {
     });
     if (verifySigner !== address) {
       return {
-        statusCode: 200,
+        statusCode: 401,
         body: JSON.stringify({
-          error: 'sign is not valid'
+          message: 'signature is not valid'
         })
       }
     } else {
@@ -43,17 +43,20 @@ exports.handler = async (event) => {
     
       return {
         statusCode: 200,
+        headers: {
+          "Content-Type": "text/plain",
+        },
         body: token,
       }
     }
   } catch (e) {
     return {
-      statusCode: 200,
+      statusCode: 500,
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        message: 'error',
+        message: e,
       }),
     };
   }
