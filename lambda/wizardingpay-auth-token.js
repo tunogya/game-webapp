@@ -7,6 +7,18 @@ exports.handler = async (event) => {
     const message = JSON.parse(event.body).message
     const signature = JSON.parse(event.body).signature
     const address = JSON.parse(event.body).address
+    
+    if (!message || !signature || !address) {
+      return {
+        statusCode: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: 'message, signature, address are required'
+        })
+      }
+    }
   
     const r = signature.slice(0, 66)
     const s = "0x" + signature.slice(66, 130)
