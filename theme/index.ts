@@ -3,6 +3,8 @@ import styles from './styles'
 import Button from './components/button'
 import Text from './components/text'
 import Heading from "./components/heading";
+import Input from "./components/input";
+
 
 const overrides = {
   styles,
@@ -10,6 +12,7 @@ const overrides = {
     Button,
     Text,
     Heading,
+    Input,
   },
 }
 

@@ -1,6 +1,6 @@
 import {Avatar, Button, HStack, Stack, Text, useToast} from "@chakra-ui/react";
 import {ConnectButton} from '@rainbow-me/rainbowkit';
-import {useAccount, useSignMessage} from 'wagmi'
+import {useAccount} from 'wagmi'
 import axios from "axios";
 import {useRouter} from "next/router";
 import useTelegramUser from "../../hooks/useTelegramUser";
@@ -11,9 +11,6 @@ export default function Link() {
   const router = useRouter();
   const {userId} = router.query;
   const {user} = useTelegramUser(userId);
-  const {data, isError, isLoading, isSuccess, signMessage} = useSignMessage({
-    message: `I want to link my wallet to this Telegram account: @${user.username}.`,
-  });
   const toast = useToast()
   const [wallet, setWallet] = useState<string[]>([]);
 
@@ -40,8 +37,6 @@ export default function Link() {
         method: 'post',
         url: `https://api.wizardingpay.com/tg/wallet?userId=${userId}`,
         data: {
-          message: `I want to link my wallet to this Telegram account: @${user.username}.`,
-          sign: data,
           address: address,
         }
       })
@@ -69,25 +64,11 @@ export default function Link() {
         description: "Some error occurred, please try again later.",
       })
     }
-  }, [userId, user.username, data, address, getWallet, toast])
+  }, [userId, user.username, address, getWallet, toast])
 
   useEffect(() => {
     getWallet();
   }, [getWallet])
-
-  useEffect(() => {
-    if (isSuccess) {
-      linkWallet();
-    }
-    if (isError) {
-      toast({
-        title: "Error",
-        status: "error",
-        variant: "subtle",
-        description: "Some error occurred, please try again later.",
-      })
-    }
-  }, [isError, isSuccess, linkWallet, toast])
 
   return (
     <Stack maxW={'container.sm'} w={'full'} p={3}>
@@ -99,7 +80,7 @@ export default function Link() {
       </HStack>
       { address && (
         <Stack py={20}>
-          <Button onClick={async () => signMessage?.()} isLoading={isLoading}>
+          <Button onClick={linkWallet}>
             Link new wallet
           </Button>
         </Stack>

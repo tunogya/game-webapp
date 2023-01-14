@@ -4,7 +4,7 @@ import {Center, ChakraProvider} from "@chakra-ui/react";
 import theme from "../theme";
 import Script from "next/script";
 import {configureChains, createClient, goerli, mainnet, WagmiConfig} from "wagmi";
-import {connectorsForWallets, RainbowKitProvider} from "@rainbow-me/rainbowkit";
+import {connectorsForWallets, RainbowKitProvider, lightTheme} from "@rainbow-me/rainbowkit";
 import {infuraProvider} from 'wagmi/providers/infura';
 import {
   argentWallet,
@@ -60,7 +60,9 @@ const wagmiClient = createClient({
 export default function App({Component, pageProps}: AppProps) {
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}>
+      <RainbowKitProvider chains={chains} theme={lightTheme({
+        borderRadius: 'small',
+      })}>
         <ChakraProvider theme={theme}>
           <Center>
             <Component {...pageProps} />
