@@ -32,6 +32,9 @@ exports.handler = async (event) => {
     if (verifySigner !== address) {
       return {
         statusCode: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           message: 'signature is not valid'
         })
