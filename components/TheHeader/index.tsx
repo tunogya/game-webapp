@@ -1,4 +1,4 @@
-import {HStack, Link, Spacer, Text} from "@chakra-ui/react";
+import {HStack, Link, Spacer, Stack, Text} from "@chakra-ui/react";
 import Image from "next/image";
 import {ConnectButton} from "@rainbow-me/rainbowkit";
 import {useRouter} from "next/router";
@@ -28,7 +28,9 @@ const TheHeader = () => {
       }
       <Text color={'white'} _hover={{ opacity: 0.8 }} cursor={"pointer"}>Setting</Text>
       <Spacer/>
-      <ConnectButton/>
+      <Stack>
+        <ConnectButton/>
+      </Stack>
     </HStack>
   )
 }
