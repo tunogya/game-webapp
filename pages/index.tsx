@@ -48,7 +48,10 @@ export default function Index() {
     if (signStatus === "success" && signature && message) {
       const res = await axios({
         method: "POST",
-        url: `https://api.wizardingpay.com/auth/token`,
+        url: "https://api.wizardingpay.com/auth/token",
+        headers: {
+          "Content-Type": "application/json",
+        },
         data: {
           signature,
           message,
