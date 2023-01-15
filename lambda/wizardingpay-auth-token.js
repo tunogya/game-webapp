@@ -10,7 +10,7 @@ exports.handler = async (event) => {
     
     if (!message || !signature || !address) {
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers: {
           "Content-Type": "application/json",
         },
