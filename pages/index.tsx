@@ -51,7 +51,7 @@ export default function Index() {
         url: `https://api.wizardingpay.com/auth/token`,
         data: {
           signature,
-          message: encodeURIComponent(message),
+          message,
           address,
         }
       })

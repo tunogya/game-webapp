@@ -51,7 +51,7 @@ exports.handler = async (event) => {
       const payload = JSON.stringify({
         exp: Math.floor((Date.now() + 86400000) / 1000),
         iat: Math.floor(Date.now() / 1000),
-        address: address,
+        sub: address,
       });
     
       const token = await jose.JWS.createSign(opt, key).update(payload).final();
