@@ -1,5 +1,8 @@
 const {DynamoDBDocumentClient, QueryCommand, PutCommand, DeleteCommand} = require('@aws-sdk/lib-dynamodb');
 const {DynamoDBClient} = require('@aws-sdk/client-dynamodb');
+const fs = require("fs");
+const jose = require("node-jose");
+const {isAddress} = require("ethers/lib/utils");
 
 const ddbClient = new DynamoDBClient({
   region: 'ap-northeast-1',
@@ -27,7 +30,7 @@ exports.handler = async (event) => {
     }
   }
 
-// if get method, get user from dynamodb
+  // if get method, get user from dynamodb
   if (event.requestContext.http.method === 'GET') {
     try {
       const userRes = await ddbDocClient.send(new QueryCommand({
@@ -63,17 +66,29 @@ exports.handler = async (event) => {
     }
   }
   
+  // if user post a new wallet to a tg account, should verify jwt payload.sub = address
+  // TODO need verify userId
   if (event.requestContext.http.method === 'POST') {
-    const address = JSON.parse(event.body).address
+    const jwt = event.headers.authorization.split(" ")[1];
+    const keys = fs.readFileSync("Keys.json");
+    const keyStore = await jose.JWK.asKeyStore(keys.toString())
+  
+    const result = await jose.JWS.createVerify(keyStore, {
+      algorithms: ["RS256"],
+    }).verify(jwt);
+  
+    const payload = JSON.parse(result.payload.toString());
     
-    if (!address) {
+    const address = payload.sub;
+    
+    if (!isAddress(address)) {
       return {
         statusCode: 200,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: 'address is required'
+          message: "invalid address in jwt",
         })
       }
     }
@@ -110,16 +125,26 @@ exports.handler = async (event) => {
   }
   
   if (event.requestContext.http.method === 'DELETE') {
-    const address = JSON.parse(event.body).address
+    const jwt = event.headers.authorization.split(" ")[1];
+    const keys = fs.readFileSync("Keys.json");
+    const keyStore = await jose.JWK.asKeyStore(keys.toString());
   
-    if (!address) {
+    const result = await jose.JWS.createVerify(keyStore, {
+      algorithms: ["RS256"],
+    }).verify(jwt);
+  
+    const payload = JSON.parse(result.payload.toString());
+  
+    const address = payload.sub;
+  
+    if (!isAddress(address)) {
       return {
         statusCode: 200,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: 'address is required'
+          message: "invalid address in jwt",
         })
       }
     }
