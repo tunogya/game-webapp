@@ -17,7 +17,7 @@ exports.handler = async (event) => {
   
   if (!userId) {
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers: {
         "Content-Type": "application/json",
       },
@@ -50,13 +50,14 @@ exports.handler = async (event) => {
         }),
       };
     } catch (e) {
+      console.log(e)
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: e,
+          message: "error",
         })
       }
     }
@@ -64,6 +65,18 @@ exports.handler = async (event) => {
   
   if (event.requestContext.http.method === 'POST') {
     const address = JSON.parse(event.body).address
+    
+    if (!address) {
+      return {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: 'address is required'
+        })
+      }
+    }
     
     try {
       await ddbDocClient.send(new PutCommand({
@@ -99,6 +112,18 @@ exports.handler = async (event) => {
   if (event.requestContext.http.method === 'DELETE') {
     const address = JSON.parse(event.body).address
   
+    if (!address) {
+      return {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: 'address is required'
+        })
+      }
+    }
+  
     try {
       await ddbDocClient.send(new DeleteCommand({
         TableName: 'wizardingpay',
@@ -117,20 +142,16 @@ exports.handler = async (event) => {
         })
       }
     } catch (e) {
+      console.log(e)
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: e
+          message: "error"
         })
       }
     }
-  }
-  
-  return {
-    statusCode: 200,
-    body: JSON.stringify(event),
   }
 };
