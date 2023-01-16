@@ -1,13 +1,18 @@
-import {Button, Heading, Link, Stack, Text} from "@chakra-ui/react";
+import {Button, Heading, Stack, Text} from "@chakra-ui/react";
 import {ConnectButton} from "@rainbow-me/rainbowkit";
 import {useAccount, useNetwork, useSignMessage} from "wagmi";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import axios from "axios";
+import {useRouter} from "next/router";
+import {useRecoilState} from "recoil";
+import {tokenAtom} from "../state";
 
 export default function Index() {
   const { address } = useAccount()
   const { chain } = useNetwork()
   const [status, setStatus] = useState("wait_connect")
+  const router = useRouter()
+  const [, setToken] = useRecoilState(tokenAtom)
 
   const message = useMemo(() => {
     return `https://game.wizardingpay.com wants you to sign in with your Ethereum account: ${address}. Chain ID: ${chain}. Issued At: ${new Date().toISOString()}. Expiration Time: ${new Date(new Date().getTime() + 86400000).toISOString()}`
@@ -45,7 +50,7 @@ export default function Index() {
   }, [address, signStatus])
 
   const getToken = useCallback(async () => {
-    if (signStatus === "success" && signature && message) {
+    if (signStatus === "success" && signature && message && address) {
       const res = await axios({
         method: "POST",
         url: "https://api.wizardingpay.com/auth/token",
@@ -59,8 +64,8 @@ export default function Index() {
         }
       })
       if (res.data) {
-        console.log(res.data)
-        // TODO save JWT token to local storage
+        setToken(res.data)
+        await router.push('/dashboard')
       }
     }
   }, [address, message, signStatus, signature])

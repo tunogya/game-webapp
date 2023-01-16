@@ -1,4 +1,4 @@
-import {HStack, Link, Spacer, Stack, Text} from "@chakra-ui/react";
+import {HStack, Spacer, Stack, Text} from "@chakra-ui/react";
 import Image from "next/image";
 import {ConnectButton} from "@rainbow-me/rainbowkit";
 import {useRouter} from "next/router";
@@ -21,9 +21,9 @@ const TheHeader = () => {
       </HStack>
       {
         menu.map((item, index) => (
-          <Link key={index} href={item.pathname} color={'white'}
+          <Text key={index} color={'white'} onClick={() => router.push(item.pathname)} cursor={'pointer'}
                 borderBottom={router.pathname === item.pathname ? '2px solid white' : '2px solid transparent'}
-                _hover={{ opacity: 0.8 }}>{item.label}</Link>
+                _hover={{ opacity: 0.8 }}>{item.label}</Text>
         ))
       }
       <Text color={'white'} _hover={{ opacity: 0.8 }} cursor={"pointer"}>Setting</Text>

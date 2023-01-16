@@ -5,6 +5,8 @@ import axios from "axios";
 import {useRouter} from "next/router";
 import useTelegramUser from "../../hooks/useTelegramUser";
 import {useCallback, useEffect, useState} from "react";
+import {tokenAtom} from "../../state";
+import {useRecoilValue} from "recoil";
 
 export default function Link() {
   const {address} = useAccount();
@@ -13,6 +15,8 @@ export default function Link() {
   const {user} = useTelegramUser(userId);
   const toast = useToast()
   const [wallet, setWallet] = useState<string[]>([]);
+  const token = useRecoilValue(tokenAtom);
+  const [status, setStatus] = useState("idle");
 
   const getWallet = useCallback(async () => {
     if (!userId) {
@@ -32,12 +36,13 @@ export default function Link() {
   }, [userId])
 
   const linkWallet = useCallback(async () => {
+    setStatus('loading')
     try {
       const res = await axios({
         method: 'post',
         url: `https://api.wizardingpay.com/tg/wallet?userId=${userId}`,
-        data: {
-          address: address,
+        headers: {
+          "Authorization": `Bearer ${token}`,
         }
       })
       if (res.data?.address?.toLowerCase() === address?.toLowerCase()) {
@@ -56,6 +61,7 @@ export default function Link() {
           description: "Some error occurred, please try again later.",
         })
       }
+      setStatus('idle')
     } catch (e) {
       toast({
         title: "Error",
@@ -63,8 +69,9 @@ export default function Link() {
         variant: "subtle",
         description: "Some error occurred, please try again later.",
       })
+      setStatus('idle')
     }
-  }, [userId, user.username, address, getWallet, toast])
+  }, [userId, user.username, address, getWallet, token])
 
   useEffect(() => {
     getWallet();
@@ -78,13 +85,11 @@ export default function Link() {
                 src={user.avatar_url}/>
         <ConnectButton/>
       </HStack>
-      { address && (
-        <Stack py={20}>
-          <Button onClick={linkWallet}>
-            Link new wallet
-          </Button>
-        </Stack>
-      ) }
+      <Stack py={20}>
+        <Button onClick={linkWallet} isLoading={status === 'loading'}>
+          Link wallet
+        </Button>
+      </Stack>
       <Stack>
         <Text fontWeight={'bold'}>My linked wallets</Text>
       </Stack>

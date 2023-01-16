@@ -16,6 +16,7 @@ import {
   trustWallet,
   walletConnectWallet
 } from "@rainbow-me/rainbowkit/wallets";
+import {RecoilRoot} from "recoil";
 
 const {chains, provider} = configureChains(
   [mainnet, goerli],
@@ -63,22 +64,24 @@ export default function App({Component, pageProps}: AppProps) {
       <RainbowKitProvider chains={chains} theme={lightTheme({
         borderRadius: 'small',
       })}>
-        <ChakraProvider theme={theme}>
-          <Center>
-            <Component {...pageProps} />
-            <Script src={"https://telegram.org/js/games.js"}/>
-            <Script src={"https://www.googletagmanager.com/gtag/js?id=G-GY77H61X8Q"}></Script>
-            <Script id="google-tag-manager" strategy="afterInteractive">
-              {`
+        <RecoilRoot>
+          <ChakraProvider theme={theme}>
+            <Center>
+              <Component {...pageProps} />
+              <Script src={"https://telegram.org/js/games.js"}/>
+              <Script src={"https://www.googletagmanager.com/gtag/js?id=G-GY77H61X8Q"}></Script>
+              <Script id="google-tag-manager" strategy="afterInteractive">
+                {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 
                 gtag('config', 'G-GY77H61X8Q');
               `}
-            </Script>
-          </Center>
-        </ChakraProvider>
+              </Script>
+            </Center>
+          </ChakraProvider>
+        </RecoilRoot>
       </RainbowKitProvider>
     </WagmiConfig>
   )
