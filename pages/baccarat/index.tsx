@@ -62,7 +62,7 @@ const Baccarat = () => {
               ))
             }
           </HStack>
-          <Button variant={"solid"} w={'120px'}>
+          <Button variant={"solid"} w={'120px'} colorScheme={'cyan'}>
             Settle
           </Button>
         </HStack>
@@ -108,11 +108,11 @@ const Baccarat = () => {
               <Stack w={'300px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                      spacing={0}>
                 <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'}>BANKER</Text>
-                <Text color={'blue.200'} fontSize={'sm'}>1:0.95</Text>
+                <Text color={'red.200'} fontSize={'sm'}>1:0.95</Text>
               </Stack>
               <Stack w={'200px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}>
-                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>BANKER PAIR</Text>
-                <Text color={'blue.200'} fontSize={'sm'}>1:11</Text>
+                <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>BANKER PAIR</Text>
+                <Text color={'red.200'} fontSize={'sm'}>1:11</Text>
               </Stack>
             </HStack>
             <HStack borderTop={'1px solid white'} h={'240px'} borderBottom={'1px solid white'}>
@@ -129,7 +129,7 @@ const Baccarat = () => {
             <Stack px={2} h={'full'} alignItems={"center"}>
               <HStack justifyContent={"space-between"} w={'full'}>
                 <Text fontWeight={'bold'} color={'blue.200'}>My Cheques</Text>
-                <Button variant={"solid"}>
+                <Button variant={"solid"} colorScheme={'cyan'}>
                   Pick Token
                 </Button>
               </HStack>
@@ -138,7 +138,7 @@ const Baccarat = () => {
           <Stack h={'full'} w={'400px'} border={'2px solid white'} p={2}>
             <HStack justifyContent={'space-between'}>
               <Text color={'blue.200'} fontWeight={'bold'}>Shoe</Text>
-              <Button variant={"solid"} size={'sm'} colorScheme={'cyan'}>Shuffle</Button>
+              <Button variant={"solid"} colorScheme={'cyan'}>Shuffle</Button>
             </HStack>
             <Wrap justify={'center'}>
               {
