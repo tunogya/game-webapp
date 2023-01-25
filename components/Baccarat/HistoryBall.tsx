@@ -1,23 +1,17 @@
 import {Stack, Text} from "@chakra-ui/react";
 import {FC} from "react";
 
-// enum Result {}
-export enum BaccaratResult {
-  Player = 'Player',
-  Banker = 'Banker',
-  Tie = 'Tie',
-}
-
 type HistoryBallProps = {
-  result: BaccaratResult;
+  player: boolean;
+  banker: boolean;
+  tie: boolean;
   bPair: boolean;
   pPair: boolean;
   super6: boolean;
 }
 
 const HistoryBall: FC<HistoryBallProps> = ({...props}) => {
-
-  if (props.result === BaccaratResult.Player) {
+  if (props.player) {
     return (
       <Stack w={'40px'} h={'40px'} bg={'white'} borderRadius={'full'} alignItems={"center"} justify={"center"} spacing={0}>
         <Text color={'black'} fontWeight={'bold'} textDecoration={(props.bPair || props.pPair) ? 'underline' : ''}>P</Text>
@@ -25,7 +19,7 @@ const HistoryBall: FC<HistoryBallProps> = ({...props}) => {
     )
   }
 
-  if (props.result === BaccaratResult.Banker) {
+  if (props.banker) {
     return (
       <Stack w={'40px'} h={'40px'} bg={'red.200'} borderRadius={'full'} alignItems={"center"} justify={"center"}>
         <Text color={'white'} fontWeight={'bold'} textDecoration={(props.bPair || props.pPair) ? 'underline' : ''}>
@@ -35,7 +29,7 @@ const HistoryBall: FC<HistoryBallProps> = ({...props}) => {
       )
   }
 
-  if (props.result === BaccaratResult.Tie) {
+  if (props.tie) {
     return (
       <Stack w={'40px'} h={'40px'} border={'2px solid white'} borderRadius={'full'} alignItems={"center"} justify={"center"}>
         <Text color={'white'} fontWeight={'bold'} textDecoration={(props.bPair || props.pPair) ? 'underline' : ''}>T</Text>

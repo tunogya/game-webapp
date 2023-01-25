@@ -25,11 +25,8 @@ const Button = defineStyleConfig({
   variants: {
     outline: {
       border: '2px solid',
-      borderColor: 'blue.500',
-      color: 'blue.500',
     },
     solid: {
-      bg: 'blue.500',
       color: 'white',
     },
   },
