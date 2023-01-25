@@ -15,6 +15,7 @@ import {isAddress} from "ethers/lib/utils";
 import {useNetwork, useToken} from "wagmi";
 import {useRecoilState} from "recoil";
 import {baccaratChequeAtom} from "../../state";
+import {AddressZero} from "@ethersproject/constants";
 
 const PickTokenModal = () => {
   const { chain } = useNetwork()
@@ -50,7 +51,16 @@ const PickTokenModal = () => {
           </ModalBody>
           <ModalFooter>
             <HStack justify={"space-between"} w={'full'}>
-              <Button variant={'ghost'} onClick={onClose}>Pick Native Currency</Button>
+              <Button variant={'ghost'} onClick={() => {
+                setCheque({
+                  chainId: chain?.id,
+                  address: AddressZero,
+                  decimals: chain?.nativeCurrency.decimals,
+                  name: chain?.nativeCurrency.name,
+                  symbol: chain?.nativeCurrency.symbol,
+                })
+                onClose()
+              }}>Pick Native Currency</Button>
               <Button disabled={!isAddress(token) || !tokenData} onClick={() => {
                 if (tokenData) {
                   setCheque({

@@ -11,9 +11,9 @@ import {
   Text, useDisclosure, useToast
 } from "@chakra-ui/react";
 import {ChevronRightIcon} from "@chakra-ui/icons";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 import {isAddress} from "ethers/lib/utils";
-import {useNetwork, useSignMessage, useToken} from "wagmi";
+import {useNetwork, useToken} from "wagmi";
 import axios from "axios";
 import {useRecoilValue} from "recoil";
 import {tokenAtom} from "../../state";
@@ -84,12 +84,12 @@ const CreateDuneProjectModal = () => {
       <Modal isCentered isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
         <ModalOverlay/>
         <ModalContent borderRadius={12}>
-          <ModalHeader fontSize={'md'} fontWeight={'bold'} fontFamily={'Montserrat'}>Create a dune project</ModalHeader>
+          <ModalHeader fontSize={'md'} fontWeight={'bold'}>Create a dune project</ModalHeader>
           <ModalCloseButton borderRadius={'full'}/>
           <ModalBody>
             <Stack>
               <FormControl isInvalid={(!!token && !isAddress(token) || tokenStatus === 'error')}>
-                <FormLabel fontSize={'xs'} fontFamily={'Montserrat'}>
+                <FormLabel fontSize={'xs'}>
                   token: {tokenStatus === 'loading' && '(loading...)'} {tokenStatus === 'success' && `(${tokenData?.name}, ${tokenData?.symbol})`} {tokenStatus === 'error' && '(error token)'}
                 </FormLabel>
                 <Input

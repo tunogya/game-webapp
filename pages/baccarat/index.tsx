@@ -138,7 +138,7 @@ const Baccarat = () => {
                     <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>1</Td>
                     <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>0x1234...7892</Td>
                     <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>Banker</Td>
-                    <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>25 {cheque.symbol}</Td>
+                    <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>25</Td>
                   </Tr>
                 </Tbody>
               </Table>
