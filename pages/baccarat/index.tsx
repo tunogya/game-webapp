@@ -21,7 +21,6 @@ import PickTokenModal from "../../components/Baccarat/PickTokenModal";
 import {useRecoilValue} from "recoil";
 import {baccaratChequeAtom} from "../../state";
 import {useAccount, useBalance, useNetwork} from "wagmi";
-import {BigNumber} from "ethers";
 import {AddressZero} from "@ethersproject/constants";
 
 const ChakraBox = chakra(motion.div, {
@@ -44,7 +43,7 @@ const Baccarat = () => {
 
   useEffect(() => {
     if (balanceData) {
-      setBalance(BigNumber.from(balanceData.value).div(BigNumber.from(10).pow(balanceData?.decimals || 0)).toNumber().toLocaleString('em-US', {
+      setBalance(Number(balanceData.formatted).toLocaleString('en-US', {
         maximumFractionDigits: 2,
       }))
     }
