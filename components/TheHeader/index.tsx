@@ -12,7 +12,7 @@ const TheHeader = () => {
   ]
 
   return (
-    <HStack h={'64px'} w={'full'} bg={'blue.600'} alignItems={"center"} px={6} spacing={6} userSelect={'none'}>
+    <HStack h={'64px'} minH={'64px'} w={'full'} bg={'blue.600'} alignItems={"center"} px={6} spacing={6} userSelect={'none'}>
       <HStack spacing={3} onClick={() => {
         router.push('/dashboard')
       }} cursor={'pointer'}>

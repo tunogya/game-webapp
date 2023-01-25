@@ -4,9 +4,9 @@ import HistoryBall, {BaccaratResult} from "../../components/Baccarat/HistoryBall
 
 const Baccarat = () => {
   return (
-    <Stack h={'100vh'} w={'full'} spacing={0}>
+    <Stack h={'100vh'} w={'full'} spacing={0} overflow={'scroll'} bg={"blue.600"}>
       <TheHeader/>
-      <Stack h={'full'} bg={"blue.600"} p={'40px'} spacing={'20px'}>
+      <Stack p={'20px'} spacing={'20px'} justify={"center"}>
         <HStack justify={"space-around"}>
           <Text w={'120px'} color={'white'} fontWeight={'bold'}>
             Baccarat
@@ -29,9 +29,12 @@ const Baccarat = () => {
               ].map((item, index) => (
                 <Stack key={index} w={'57px'} h={'88px'} border={'1px solid white'} borderRadius={'6px'} p={1}
                        bg={'white'} boxShadow={'md'} userSelect={"none"}>
-                  <Text fontSize={'xs'} fontWeight={'bold'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
-                  <Text fontSize={'xl'} textAlign={"center"} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
-                  <Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
+                  <Text fontSize={'xs'} fontWeight={'bold'}
+                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
+                  <Text fontSize={'xl'} textAlign={"center"}
+                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
+                  <Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'}
+                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
                 </Stack>
               ))
             }
@@ -55,9 +58,12 @@ const Baccarat = () => {
               ].map((item, index) => (
                 <Stack key={index} w={'57px'} h={'88px'} border={'1px solid white'} borderRadius={'6px'} p={1}
                        bg={'white'} boxShadow={'md'} userSelect={"none"}>
-                  <Text fontSize={'xs'} fontWeight={'bold'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
-                  <Text fontSize={'xl'} textAlign={"center"} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
-                  <Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
+                  <Text fontSize={'xs'} fontWeight={'bold'}
+                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
+                  <Text fontSize={'xl'} textAlign={"center"}
+                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
+                  <Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'}
+                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
                 </Stack>
               ))
             }
@@ -66,7 +72,7 @@ const Baccarat = () => {
             Settle
           </Button>
         </HStack>
-        <HStack h={'full'} justify={"center"} spacing={'40px'}>
+        <HStack justify={"center"} alignItems={"start"} spacing={'40px'}>
           <Stack h={'full'}>
             <Stack h={'40%'} w={'400px'} border={'2px solid white'} overflow={'scroll'}>
               <Table variant='striped' colorScheme='blackAlpha'>
@@ -93,7 +99,7 @@ const Baccarat = () => {
             </Stack>
           </Stack>
           <Stack h={'full'} border={'2px solid white'}>
-            <HStack borderBottom={'1px solid white'} h={'180px'}>
+            <HStack borderBottom={'1px solid white'} h={'80px'}>
               <Stack w={'300px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                      spacing={0}>
                 <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>TIE</Text>
@@ -104,7 +110,7 @@ const Baccarat = () => {
                 <Text color={'blue.200'} fontSize={'sm'}>1:12</Text>
               </Stack>
             </HStack>
-            <HStack borderTop={'1px solid white'} borderBottom={'1px solid white'} h={'240px'}>
+            <HStack borderTop={'1px solid white'} borderBottom={'1px solid white'} h={'160px'}>
               <Stack w={'300px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                      spacing={0}>
                 <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'}>BANKER</Text>
@@ -115,7 +121,7 @@ const Baccarat = () => {
                 <Text color={'red.200'} fontSize={'sm'}>1:11</Text>
               </Stack>
             </HStack>
-            <HStack borderTop={'1px solid white'} h={'240px'} borderBottom={'1px solid white'}>
+            <HStack borderTop={'1px solid white'} h={'160px'} borderBottom={'1px solid white'}>
               <Stack w={'300px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                      spacing={0}>
                 <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>PLAYER</Text>
@@ -126,13 +132,46 @@ const Baccarat = () => {
                 <Text color={'blue.200'} fontSize={'sm'}>1:11</Text>
               </Stack>
             </HStack>
-            <Stack px={2} h={'full'} alignItems={"center"}>
+            <Stack px={2} h={'320px'} alignItems={"center"}>
               <HStack justifyContent={"space-between"} w={'full'}>
                 <Text fontWeight={'bold'} color={'blue.200'}>My Cheques</Text>
                 <Button variant={"solid"} colorScheme={'cyan'}>
                   Pick Token
                 </Button>
               </HStack>
+              <Stack alignItems={"center"} justify={"center"}>
+                <HStack>
+                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
+                         justify={"center"}>
+                    <Text fontWeight={'bold'}>1</Text>
+                  </Stack>
+                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
+                         justify={"center"}>
+                    <Text fontWeight={'bold'}>5</Text>
+                  </Stack>
+                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
+                         justify={"center"}>
+                    <Text fontWeight={'bold'}>20</Text>
+                  </Stack>
+                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
+                         justify={"center"}>
+                    <Text fontWeight={'bold'}>50</Text>
+                  </Stack>
+                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
+                         justify={"center"}>
+                    <Text fontWeight={'bold'}>100</Text>
+                  </Stack>
+                </HStack>
+                <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
+                  Total: 100 NEST
+                </Text>
+                <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
+                  Left: 100 NEST
+                </Text>
+                <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
+                  Usage: 100 NEST
+                </Text>
+              </Stack>
             </Stack>
           </Stack>
           <Stack h={'full'} w={'400px'} border={'2px solid white'} p={2}>
@@ -217,11 +256,15 @@ const Baccarat = () => {
                   },
                 ].map((item, index) => (
                   <WrapItem key={index}>
-                    <Stack w={'29px'} h={'44px'} border={'1px solid white'} borderRadius={'4px'} bg={'white'} spacing={0}
+                    <Stack w={'29px'} h={'44px'} border={'1px solid white'} borderRadius={'4px'} bg={'white'}
+                           spacing={0}
                            boxShadow={'sm'} p={'2px'} justify={"space-between"} userSelect={'none'}>
-                      <Text fontSize={'xx-small'} lineHeight={'10px'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
-                      <Text fontSize={'sm'}  textAlign={"center"} lineHeight={'20px'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
-                      <Text fontSize={'xx-small'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'} lineHeight={'10px'} transform={'rotate(180deg)'}>{item.rank}</Text>
+                      <Text fontSize={'xx-small'} lineHeight={'10px'}
+                            color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
+                      <Text fontSize={'sm'} textAlign={"center"} lineHeight={'20px'}
+                            color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
+                      <Text fontSize={'xx-small'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}
+                            lineHeight={'10px'} transform={'rotate(180deg)'}>{item.rank}</Text>
                     </Stack>
                   </WrapItem>
                 ))
