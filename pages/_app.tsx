@@ -62,7 +62,7 @@ export default function App({Component, pageProps}: AppProps) {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains} theme={lightTheme({
-        borderRadius: 'small',
+        borderRadius: 'medium',
       })}>
         <RecoilRoot>
           <ChakraProvider theme={theme}>
