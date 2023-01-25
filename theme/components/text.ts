@@ -1,7 +1,8 @@
 import {defineStyleConfig} from "@chakra-ui/react";
-import {Montserrat} from "@next/font/google";
+import {Montserrat, } from "@next/font/google";
 
 const montserrat = Montserrat({ subsets: ['latin'] });
+
 
 const Text = defineStyleConfig({
   baseStyle: {

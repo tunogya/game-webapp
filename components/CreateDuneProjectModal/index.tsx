@@ -15,6 +15,8 @@ import {useCallback, useEffect, useState} from "react";
 import {isAddress} from "ethers/lib/utils";
 import {useNetwork, useSignMessage, useToken} from "wagmi";
 import axios from "axios";
+import {useRecoilValue} from "recoil";
+import {tokenAtom} from "../../state";
 
 const CreateDuneProjectModal = () => {
   const { chain } = useNetwork()
@@ -25,11 +27,18 @@ const CreateDuneProjectModal = () => {
     address: isAddress(token) ? token : undefined,
   })
   const toast = useToast()
+  const jwt = useRecoilValue(tokenAtom)
   const create = useCallback(async () => {
+    if (!jwt) {
+      return
+    }
     try {
       const res = await axios({
         method: 'post',
         url: `https://api.wizardingpay.com/game/dune/project`,
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+        },
         data: {
           token: {
             address: tokenData?.address,
@@ -37,6 +46,7 @@ const CreateDuneProjectModal = () => {
             name: tokenData?.name,
             symbol: tokenData?.symbol,
             totalSupply: tokenData?.totalSupply.value.toString(),
+            chainId: chain?.id,
           }
         }
       })
@@ -64,7 +74,7 @@ const CreateDuneProjectModal = () => {
         description: "Your dune project is created failed!",
       })
     }
-  }, [tokenData?.address, tokenData?.decimals, tokenData?.name, tokenData?.symbol, tokenData?.totalSupply.value, onClose, toast])
+  }, [jwt, tokenData?.address, tokenData?.decimals, tokenData?.name, tokenData?.symbol, tokenData?.totalSupply.value, onClose, toast])
 
   return (
     <>

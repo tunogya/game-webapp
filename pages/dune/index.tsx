@@ -6,6 +6,7 @@ import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
 import useTelegramUser from "../../hooks/useTelegramUser";
 
+// telegram webapp
 export default function Home() {
   const router = useRouter();
 
@@ -20,7 +21,7 @@ export default function Home() {
     try {
       const res = await axios({
         method: 'get',
-        url: `https://api.wizardingpay.com/game/dune?userId=${userId}`,
+        url: `https://api.wizardingpay.com/game/dune/userInfo?userId=${userId}`,
       })
       if (res.data) {
         setState({

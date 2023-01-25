@@ -3,7 +3,7 @@ const jose = require("node-jose");
 
 exports.handler = async (event) => {
   try {
-    const jwt = event.headers.authorization.split(" ")[1];
+    const jwt = event?.headers?.authorization?.split(" ")?.[1];
     const keys = fs.readFileSync("Keys.json");
     const keyStore = await jose.JWK.asKeyStore(keys.toString())
     

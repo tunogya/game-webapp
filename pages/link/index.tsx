@@ -8,6 +8,7 @@ import {useCallback, useEffect, useState} from "react";
 import {tokenAtom} from "../../state";
 import {useRecoilValue} from "recoil";
 
+// telegram webapp
 export default function Link() {
   const {address} = useAccount();
   const router = useRouter();

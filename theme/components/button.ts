@@ -1,11 +1,14 @@
 import { defineStyleConfig } from '@chakra-ui/react'
+import {Montserrat} from "@next/font/google";
+
+const montserrat = Montserrat({ subsets: ['latin'] });
 
 const Button = defineStyleConfig({
   baseStyle: {
     fontWeight: 'bold',
     textTransform: 'uppercase',
     borderRadius: '6px',
-    fontFamily: 'Montserrat',
+    fontFamily: montserrat.style.fontFamily,
   },
   sizes: {
     sm: {
