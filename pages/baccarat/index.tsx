@@ -14,22 +14,41 @@ import {
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import HistoryBall from "../../components/Baccarat/HistoryBall";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratAction} from "../../components/Baccarat/Cheque";
 import PickTokenModal from "../../components/Baccarat/PickTokenModal";
 import {useRecoilValue} from "recoil";
 import {baccaratChequeAtom} from "../../state";
+import {useAccount, useBalance, useNetwork} from "wagmi";
+import {BigNumber} from "ethers";
+import {AddressZero} from "@ethersproject/constants";
 
 const ChakraBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
 })
 
 const Baccarat = () => {
+  const {chain} = useNetwork()
+  const { address} = useAccount()
   const [pickedCheque, setPickedCheque] = useState(0);
   const [action, setAction] = useState<BaccaratAction | null>(null);
   const [value, setValue] = useState(0);
   const cheque = useRecoilValue(baccaratChequeAtom);
+  const { data: balanceData } = useBalance({
+    chainId: chain?.id,
+    address: address,
+    token: cheque?.address === AddressZero ? undefined : cheque?.address,
+  });
+  const [balance, setBalance] = useState('-')
+
+  useEffect(() => {
+    if (balanceData) {
+      setBalance(BigNumber.from(balanceData.value).div(BigNumber.from(10).pow(balanceData?.decimals || 0)).toNumber().toLocaleString('em-US', {
+        maximumFractionDigits: 2,
+      }))
+    }
+  }, [balanceData])
 
   const cheques = [
     {
@@ -244,8 +263,8 @@ const Baccarat = () => {
                   }
                 </HStack>
                 <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
-                  100 { value > 0 && `- ${value.toLocaleString('en-US', {
-                    maximumFractionDigits: 2,
+                  {balance} { value > 0 && `- ${value.toLocaleString('en-US', {
+                  maximumFractionDigits: 2,
                 })}`} {cheque.symbol}
                 </Text>
               </Stack>
