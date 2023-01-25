@@ -1,8 +1,29 @@
-import {Button, HStack, Stack, Table, Tbody, Td, Text, Tr, Wrap, WrapItem} from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Stack,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Tr,
+  Wrap,
+  WrapItem,
+  chakra,
+  shouldForwardProp
+} from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import HistoryBall, {BaccaratResult} from "../../components/Baccarat/HistoryBall";
+import {useState} from "react";
+import {motion, isValidMotionProp} from 'framer-motion'
+
+const ChakraBox = chakra(motion.div, {
+  shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
+})
 
 const Baccarat = () => {
+  const [pickedCheque, setPickedCheque] = useState(0);
+
   return (
     <Stack h={'100vh'} w={'full'} spacing={0} overflow={'scroll'} bg={"blue.600"}>
       <TheHeader/>
@@ -139,37 +160,62 @@ const Baccarat = () => {
                   Pick Token
                 </Button>
               </HStack>
-              <Stack alignItems={"center"} justify={"center"}>
-                <HStack>
-                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
-                         justify={"center"}>
-                    <Text fontWeight={'bold'}>1</Text>
-                  </Stack>
-                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
-                         justify={"center"}>
-                    <Text fontWeight={'bold'}>5</Text>
-                  </Stack>
-                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
-                         justify={"center"}>
-                    <Text fontWeight={'bold'}>20</Text>
-                  </Stack>
-                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
-                         justify={"center"}>
-                    <Text fontWeight={'bold'}>50</Text>
-                  </Stack>
-                  <Stack w={'44px'} h={'44px'} bg={'white'} borderRadius={'full'} alignItems={"center"}
-                         justify={"center"}>
-                    <Text fontWeight={'bold'}>100</Text>
-                  </Stack>
+              <Stack alignItems={"center"} justify={"center"} h={'full'}>
+                <HStack spacing={'20px'}>
+                  {
+                    [
+                      {
+                        value: 1, color: '#81E6D9',
+                      },
+                      {
+                        value: 5, color: 'purple',
+                      },
+                      {
+                        value: 20, color: 'orange',
+                      },
+                      {
+                        value: 50, color: '#22543D',
+                      },
+                      {
+                        value: 100, color: '#E53E3E',
+                      },
+                    ].map((item, index) => (
+                      <ChakraBox
+                        key={index}
+                        animate={pickedCheque === index ? {
+                          scale: [1, 1.5, 1],
+                          scaleY: [1, -1, 1],
+                          rotateX: [0, 180, 360],
+                        } : {}}
+                        // @ts-ignore
+                        transition={ pickedCheque === index ? {
+                          duration: 2.4,
+                          ease: "easeInOut",
+                          repeat: Infinity,
+                          repeatType: "loop",
+                        } : {}}
+                        bg={'white'}
+                        w={'44px'}
+                        h={'44px'}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        border={`4px dashed ${item.color}`}
+                        borderRadius={'full'}
+                        userSelect={'none'}
+                        cursor={"pointer"}
+                        boxShadow={'md'}
+                        onClick={() => {
+                          setPickedCheque(index)
+                        }}
+                      >
+                        <Text fontWeight={'bold'} color={item.color}>{item.value}</Text>
+                      </ChakraBox>
+                    ))
+                  }
                 </HStack>
                 <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
-                  Total: 100 NEST
-                </Text>
-                <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
-                  Left: 100 NEST
-                </Text>
-                <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
-                  Usage: 100 NEST
+                  100 NEST
                 </Text>
               </Stack>
             </Stack>
