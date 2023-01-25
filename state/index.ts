@@ -8,3 +8,15 @@ export const tokenAtom = atom({
   default: '',
   effects_UNSTABLE: [persistAtom],
 })
+
+export const baccaratChequeAtom = atom({
+  key: 'baccaratCheque',
+  default: {
+    chainId: 1,
+    address: '',
+    symbol: '-',
+    name: '-',
+    decimals: 18,
+  },
+  effects_UNSTABLE: [persistAtom],
+})

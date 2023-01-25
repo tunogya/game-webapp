@@ -17,6 +17,9 @@ import HistoryBall from "../../components/Baccarat/HistoryBall";
 import {useState} from "react";
 import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratAction} from "../../components/Baccarat/Cheque";
+import PickTokenModal from "../../components/Baccarat/PickTokenModal";
+import {useRecoilValue} from "recoil";
+import {baccaratChequeAtom} from "../../state";
 
 const ChakraBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
@@ -26,6 +29,7 @@ const Baccarat = () => {
   const [pickedCheque, setPickedCheque] = useState(0);
   const [action, setAction] = useState<BaccaratAction | null>(null);
   const [value, setValue] = useState(0);
+  const cheque = useRecoilValue(baccaratChequeAtom);
 
   const cheques = [
     {
@@ -134,7 +138,7 @@ const Baccarat = () => {
                     <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>1</Td>
                     <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>0x1234...7892</Td>
                     <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>Banker</Td>
-                    <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>25 NEST</Td>
+                    <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>25 {cheque.symbol}</Td>
                   </Tr>
                 </Tbody>
               </Table>
@@ -199,9 +203,7 @@ const Baccarat = () => {
             <Stack px={2} h={'320px'} alignItems={"center"} p={2}>
               <HStack justifyContent={"space-between"} w={'full'} spacing={0}>
                 <Text fontWeight={'bold'} color={'blue.200'}>My Cheques</Text>
-                <Button variant={"solid"} colorScheme={'blue'}>
-                  Pick Token
-                </Button>
+                <PickTokenModal/>
               </HStack>
               <Stack alignItems={"center"} justify={"center"} h={'full'}>
                 <HStack spacing={'20px'}>
@@ -244,7 +246,7 @@ const Baccarat = () => {
                 <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
                   100 { value > 0 && `- ${value.toLocaleString('en-US', {
                     maximumFractionDigits: 2,
-                })}`} NEST
+                })}`} {cheque.symbol}
                 </Text>
               </Stack>
               <HStack>
