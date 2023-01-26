@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import HistoryBall from "../../components/Baccarat/HistoryBall";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratAction} from "../../components/Baccarat/Cheque";
 import PickTokenModal from "../../components/Baccarat/PickTokenModal";
@@ -24,6 +24,7 @@ import {useAccount, useBalance, useNetwork} from "wagmi";
 import {AddressZero} from "@ethersproject/constants";
 import ApproveERC20Button from "../../components/ApproveERC20Button";
 import {BACCARAT_ADDRESS} from "../../constant/address";
+import {BigNumber} from "ethers";
 
 const ChakraBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
@@ -41,7 +42,11 @@ const Baccarat = () => {
     address: address,
     token: cheque?.address === AddressZero ? undefined : cheque?.address,
   });
-  const [balance, setBalance] = useState('-')
+  const [balance, setBalance] = useState('-');
+
+  const spendAmount = useMemo(() => {
+    return BigNumber.from(value).mul(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toString()
+  }, [cheque, value])
 
   useEffect(() => {
     if (balanceData) {
@@ -70,13 +75,21 @@ const Baccarat = () => {
   ]
 
   const deal = (a: BaccaratAction) => {
+    if (!balanceData) {
+      return;
+    }
+
     if (action === null) {
-      setAction(a);
-      setValue(value + cheques[pickedCheque].value);
+      if (Number(balanceData?.formatted) >= value + cheques[pickedCheque].value) {
+        setAction(a);
+        setValue(value + cheques[pickedCheque].value);
+      }
       return
     }
     if (action === a) {
-      setValue(value + cheques[pickedCheque].value);
+      if (Number(balanceData?.formatted) >= value + cheques[pickedCheque].value) {
+        setValue(value + cheques[pickedCheque].value);
+      }
     }
   }
 
@@ -275,8 +288,8 @@ const Baccarat = () => {
                 </Text>
               </Stack>
               <HStack>
-                {cheque.address !== AddressZero && (
-                  <ApproveERC20Button token={cheque.address} owner={address} spender={BACCARAT_ADDRESS[chain?.id || 5]} spendAmount={'1000'}/>
+                {cheque.address !== AddressZero && address && (
+                  <ApproveERC20Button token={cheque.address} owner={address} spender={BACCARAT_ADDRESS[chain?.id || 5]} spendAmount={spendAmount}/>
                 )}
                 {value > 0 && (
                   <Button variant={"solid"} colorScheme={'blue'}>

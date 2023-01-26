@@ -68,7 +68,7 @@ const PickTokenModal = () => {
                     address: token,
                     symbol: tokenData.symbol,
                     name: tokenData.name,
-                    decimal: tokenData.decimals,
+                    decimals: tokenData.decimals,
                   })
                   onClose()
                 }
