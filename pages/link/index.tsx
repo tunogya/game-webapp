@@ -72,7 +72,7 @@ export default function Link() {
       })
       setStatus('idle')
     }
-  }, [userId, user.username, address, getWallet, token])
+  }, [userId, address, getWallet, token, toast])
 
   useEffect(() => {
     getWallet();

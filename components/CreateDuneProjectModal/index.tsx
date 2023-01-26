@@ -74,7 +74,7 @@ const CreateDuneProjectModal = () => {
         description: "Your dune project is created failed!",
       })
     }
-  }, [jwt, tokenData?.address, tokenData?.decimals, tokenData?.name, tokenData?.symbol, tokenData?.totalSupply.value, chain?.id])
+  }, [jwt, tokenData?.address, tokenData?.decimals, tokenData?.name, tokenData?.symbol, tokenData?.totalSupply.value, chain?.id, onClose, toast])
 
   return (
     <>
