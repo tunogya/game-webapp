@@ -2,7 +2,7 @@ import {
   Button,
   chakra,
   HStack,
-  shouldForwardProp, Spacer,
+  shouldForwardProp,
   Stack,
   Table,
   Tbody,
@@ -33,6 +33,7 @@ import {BACCARAT_ADDRESS} from "../../constant/address";
 import {BigNumber} from "ethers";
 import {BACCARAT_ABI} from "../../constant/abi";
 import LayoutItem from "../../components/Baccarat/LayoutItem";
+import MiniPocker from "../../components/Baccarat/MiniPocker";
 
 const ChakraBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
@@ -61,8 +62,7 @@ const Baccarat = () => {
   }
   const {data: cursorData} = useContractRead({
     ...baccaratContract,
-    // TODO rename
-    functionName: 'readCursor',
+    functionName: 'cursor',
     cacheOnBlock: true,
   })
   const {data: chequesData } = useContractRead({
@@ -79,8 +79,7 @@ const Baccarat = () => {
   const {data: cardsData} = useContractRead({
     ...baccaratContract,
     functionName: 'cardsOf',
-    args: [cursorData || 0, 50],
-    cacheOnBlock: true,
+    args: [cursorData || 0, 416],
   })
 
   const _betType = useMemo(() => {
@@ -379,103 +378,24 @@ const Baccarat = () => {
               </HStack>
             </Stack>
           </Stack>
-          <Stack h={'full'} w={'400px'} border={'2px solid white'} p={2}>
+          <Stack h={'full'} w={'400px'} border={'2px solid white'} p={2} justify={"space-between"}>
             <HStack justifyContent={'space-between'}>
               <Text color={'blue.200'} fontWeight={'bold'}>Shoe</Text>
               <Button variant={"solid"} colorScheme={'blue'}>Shuffle</Button>
             </HStack>
-            <Wrap justify={'center'}>
+            <Wrap justify={'center'} overflow={'scroll'} maxH={'600px'}>
               {
-                [
-                  {
-                    rank: 'A',
-                    suit: '♠',
-                  },
-                  {
-                    rank: 'J',
-                    suit: '♦',
-                  },
-                  {
-                    rank: 'Q',
-                    suit: '♥',
-                  },
-                  {
-                    rank: '7',
-                    suit: '♣',
-                  },
-                  {
-                    rank: '9',
-                    suit: '♣',
-                  },
-                  {
-                    rank: '10',
-                    suit: '♦',
-                  },
-                  {
-                    rank: 'A',
-                    suit: '♠',
-                  },
-                  {
-                    rank: 'J',
-                    suit: '♦',
-                  },
-                  {
-                    rank: 'Q',
-                    suit: '♥',
-                  },
-                  {
-                    rank: '7',
-                    suit: '♣',
-                  },
-                  {
-                    rank: '9',
-                    suit: '♣',
-                  },
-                  {
-                    rank: '10',
-                    suit: '♦',
-                  },
-                  {
-                    rank: 'A',
-                    suit: '♠',
-                  },
-                  {
-                    rank: 'J',
-                    suit: '♦',
-                  },
-                  {
-                    rank: 'Q',
-                    suit: '♥',
-                  },
-                  {
-                    rank: '7',
-                    suit: '♣',
-                  },
-                  {
-                    rank: '9',
-                    suit: '♣',
-                  },
-                  {
-                    rank: '10',
-                    suit: '♦',
-                  },
-                ].map((item, index) => (
+                // @ts-ignore
+                cardsData && cardsData.map((item:{
+                  rank: BigNumber,
+                  suit: BigNumber,
+                }, index: number) => (
                   <WrapItem key={index}>
-                    <Stack w={'29px'} h={'44px'} border={'1px solid white'} borderRadius={'4px'} bg={'white'}
-                           spacing={0}
-                           boxShadow={'sm'} p={'2px'} justify={"space-between"} userSelect={'none'}>
-                      <Text fontSize={'xx-small'} lineHeight={'10px'}
-                            color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
-                      <Text fontSize={'sm'} textAlign={"center"} lineHeight={'20px'}
-                            color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
-                      <Text fontSize={'xx-small'} color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}
-                            lineHeight={'10px'} transform={'rotate(180deg)'}>{item.rank}</Text>
-                    </Stack>
+                    <MiniPocker suit={item.suit} rank={item.rank} />
                   </WrapItem>
                 ))
               }
             </Wrap>
-            <Spacer/>
             <Text color={'blue.200'} fontWeight={'semibold'} fontSize={'sm'}>
               Left: {BigNumber.from(8*13*4).sub(BigNumber.from(chequesData || 0)).toString()} Cards
             </Text>
