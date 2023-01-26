@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import HistoryBall from "../../components/Baccarat/HistoryBall";
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratBetType} from "../../components/Baccarat/Cheque";
 import PickTokenModal from "../../components/Baccarat/PickTokenModal";
@@ -64,26 +64,44 @@ const Baccarat = () => {
   const {data: cursorData} = useContractRead({
     ...baccaratContract,
     functionName: 'cursor',
+    watch: true,
     cacheOnBlock: true,
   })
   const {data: chequesData} = useContractRead({
     ...baccaratContract,
     functionName: 'chequesOf',
-    args: [address],
+    args: [address, cheque.address],
+    watch: true,
     cacheOnBlock: true,
   })
   const {data: layoutData} = useContractRead({
     ...baccaratContract,
     functionName: 'layout',
+    watch: true,
     cacheOnBlock: true,
   })
-  const {data: cardsData, refetch: cardsRefresh, isRefetching: isCardRefetching} = useContractRead({
+  const {data: cardsData} = useContractRead({
     ...baccaratContract,
     functionName: 'cardsOf',
-    args: [cursorData || 0, BigNumber.from(416).sub(BigNumber.from(cursorData || 0))],
+    args: [0, 416],
+    watch: true,
     cacheOnBlock: true,
   })
   const [showCard, setShowCard] = useState(true)
+  const [cards, setCards] = useState([])
+
+  const refreshCards = useCallback(async () => {
+    if (cardsData && cursorData) {
+      // @ts-ignore
+      setCards(cardsData.filter((item, index) => {
+        return index >= BigNumber.from(cursorData).toNumber()
+      }))
+    }
+  }, [cardsData, cursorData])
+
+  useEffect(() => {
+    refreshCards()
+  }, [refreshCards])
 
   const _betType = useMemo(() => {
     switch (betType) {
@@ -179,7 +197,7 @@ const Baccarat = () => {
 
   // @ts-ignore
   return (
-    <Stack h={'100vh'} w={'full'} spacing={0} overflow={'scroll'} bg={"blue.600"}>
+    <Stack h={'100vh'} w={'full'} spacing={0} overflow={'auto'} bg={"blue.600"}>
       <TheHeader/>
       <Stack p={'20px'} spacing={'20px'} justify={"center"}>
         <HStack justify={"space-around"}>
@@ -298,56 +316,56 @@ const Baccarat = () => {
           </Stack>
           <Stack h={'full'} border={'2px solid white'} spacing={0}>
             <HStack borderBottom={'1px solid white'} h={'80px'} spacing={0}>
-              <Stack w={'300px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
+              <Stack w={'280px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                      cursor={'pointer'} userSelect={'none'} spacing={0} onClick={() => deal(BaccaratBetType.Tie)}>
-                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>TIE</Text>
+                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>T</Text>
                 <Text color={'blue.200'} fontSize={'sm'}>1:8</Text>
-                <Cheque value={value} hidden={betType !== BaccaratBetType.Tie} width={'300px'} height={'80px'}
+                <Cheque value={value} hidden={betType !== BaccaratBetType.Tie} width={'280px'} height={'80px'}
                         odds={9}/>
               </Stack>
-              <Stack w={'200px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
+              <Stack w={'120px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                      cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.SuperSix)}>
-                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>Super 6</Text>
+                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>6</Text>
                 <Text color={'blue.200'} fontSize={'sm'}>1:12</Text>
-                <Cheque value={value} hidden={betType !== BaccaratBetType.SuperSix} width={'200px'} height={'80px'}
+                <Cheque value={value} hidden={betType !== BaccaratBetType.SuperSix} width={'120px'} height={'80px'}
                         odds={13}/>
               </Stack>
             </HStack>
             <HStack borderBottom={'1px solid white'} h={'160px'} spacing={0}>
-              <Stack w={'300px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
+              <Stack w={'280px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                      cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.Banker)}
                      spacing={0}>
-                <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'}>BANKER</Text>
+                <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'}>B</Text>
                 <Text color={'red.200'} fontSize={'sm'}>1:0.95</Text>
-                <Cheque value={value} hidden={betType !== BaccaratBetType.Banker} width={'300px'} height={'160px'}
+                <Cheque value={value} hidden={betType !== BaccaratBetType.Banker} width={'280px'} height={'160px'}
                         odds={1.95}/>
               </Stack>
-              <Stack w={'200px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
+              <Stack w={'120px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                      cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.BankerPair)}>
-                <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>BANKER PAIR</Text>
+                <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>B PAIR</Text>
                 <Text color={'red.200'} fontSize={'sm'}>1:11</Text>
-                <Cheque value={value} hidden={betType !== BaccaratBetType.BankerPair} width={'200px'} height={'160px'}
+                <Cheque value={value} hidden={betType !== BaccaratBetType.BankerPair} width={'120px'} height={'160px'}
                         odds={12}/>
               </Stack>
             </HStack>
             <HStack h={'160px'} borderBottom={'1px solid white'} spacing={0}>
-              <Stack w={'300px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
+              <Stack w={'280px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                      cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.Player)}
                      spacing={0}>
-                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>PLAYER</Text>
+                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>P</Text>
                 <Text color={'blue.200'} fontSize={'sm'}>1:1</Text>
-                <Cheque value={value} hidden={betType !== BaccaratBetType.Player} width={'300px'} height={'160px'}
+                <Cheque value={value} hidden={betType !== BaccaratBetType.Player} width={'280px'} height={'160px'}
                         odds={2}/>
               </Stack>
-              <Stack w={'200px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
+              <Stack w={'120px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                      cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.PlayerPair)}>
-                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>PLAYER PAIR</Text>
+                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>P PAIR</Text>
                 <Text color={'blue.200'} fontSize={'sm'}>1:11</Text>
-                <Cheque value={value} hidden={betType !== BaccaratBetType.PlayerPair} width={'200px'} height={'160px'}
+                <Cheque value={value} hidden={betType !== BaccaratBetType.PlayerPair} width={'120px'} height={'160px'}
                         odds={12}/>
               </Stack>
             </HStack>
-            <Stack px={2} h={'320px'} alignItems={"center"} p={2}>
+            <Stack px={2} h={'240px'} alignItems={"center"} p={2}>
               <HStack justifyContent={"space-between"} w={'full'} spacing={0}>
                 <Text fontWeight={'bold'} color={'blue.200'}>My Cheques</Text>
                 <PickTokenModal/>
@@ -391,7 +409,7 @@ const Baccarat = () => {
                           setPickedCheque(index)
                         }}
                       >
-                        <Text fontWeight={'bold'} color={item.color}>{item.label}</Text>
+                        <Text fontWeight={'bold'} textDecoration={pickedCheque === index ? 'underline' : ''} color={item.color}>{item.label}</Text>
                       </ChakraBox>
                     )).slice(-5)
                   }
@@ -402,6 +420,7 @@ const Baccarat = () => {
                 })}`} {cheque.symbol}
                 </Text>
               </Stack>
+              <Spacer/>
               <HStack>
                 {cheque.address !== AddressZero && address && (
                   <ApproveERC20Button token={cheque.address} owner={address} spender={BACCARAT_ADDRESS[chain?.id || 5]}
@@ -434,10 +453,10 @@ const Baccarat = () => {
                       isLoading={shuffleStatus === 'loading'} loadingText={'Pending...'}
               >Shuffle</Button>
             </HStack>
-            <Wrap justify={'center'} overflow={'scroll'} maxH={'600px'}>
+            <Wrap justify={'center'} overflow={'scroll'} maxH={'500px'}>
               {
                 // @ts-ignore
-                cardsData && cardsData.map((item: {
+                cards.length > 0 && cards.map((item: {
                   rank: BigNumber,
                   suit: BigNumber,
                 }, index: number) => (
@@ -449,21 +468,14 @@ const Baccarat = () => {
             </Wrap>
             {/*@ts-ignore*/}
             <HStack>
-              {
-                cardsData && (
-                  <Text color={'blue.200'} fontWeight={'semibold'} fontSize={'sm'}>
-                    {/*@ts-ignore*/}
-                    Left: {cardsData?.length || 0} Cards
-                  </Text>
-                )
-              }
+              <Text color={'blue.200'} fontWeight={'semibold'} fontSize={'sm'}>
+                {/*@ts-ignore*/}
+                Left: {cards?.length || 0} Cards
+              </Text>
               <Spacer/>
-              <IconButton aria-label={'refresh'} variant={'ghost'} color={'blue.200'} isLoading={isCardRefetching}
+              <IconButton aria-label={'refresh'} variant={'ghost'} color={'blue.200'}
                           borderRadius={'full'} size={'sm'}
                           onClick={() => {
-                            if (!showCard) {
-                              cardsRefresh()
-                            }
                             setShowCard(!showCard)
                           }}
                           icon={showCard ? <ViewOffIcon/> : <ViewIcon/>}/>

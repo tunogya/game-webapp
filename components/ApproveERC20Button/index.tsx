@@ -22,6 +22,7 @@ const ApproveERC20Button: FC<ApproveERC20ButtonProps> = (props: any) => {
     ...tokenContract,
     functionName: 'allowance',
     args: [owner, spender],
+    watch: true,
     cacheOnBlock: true,
   })
   const {config} = usePrepareContractWrite({
