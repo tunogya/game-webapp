@@ -1,4 +1,4 @@
-[
+export const BACCARAT_ABI = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
