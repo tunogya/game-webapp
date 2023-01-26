@@ -151,12 +151,14 @@ const Baccarat = () => {
   const {write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
 
   useEffect(() => {
-    if (balanceData) {
-      setBalance(Number(balanceData.formatted).toLocaleString('en-US', {
+    if (balanceData && chequesData) {
+      const balance = BigNumber.from(balanceData.value).add(BigNumber.from(chequesData))
+      const formatted = balance.div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber()
+      setBalance(formatted.toLocaleString('en-US', {
         maximumFractionDigits: 2,
       }))
     }
-  }, [balanceData])
+  }, [balanceData, cheque?.decimals, chequesData])
 
   const cheques = [
     {
