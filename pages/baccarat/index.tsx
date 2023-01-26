@@ -1,8 +1,8 @@
 import {
   Button,
   chakra,
-  HStack,
-  shouldForwardProp,
+  HStack, IconButton,
+  shouldForwardProp, Spacer,
   Stack,
   Table,
   Tbody,
@@ -34,6 +34,7 @@ import {BigNumber} from "ethers";
 import {BACCARAT_ABI} from "../../constant/abi";
 import LayoutItem from "../../components/Baccarat/LayoutItem";
 import MiniPocker from "../../components/Baccarat/MiniPocker";
+import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
 
 const ChakraBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
@@ -76,36 +77,60 @@ const Baccarat = () => {
     functionName: 'layout',
     cacheOnBlock: true,
   })
-  const {data: cardsData} = useContractRead({
+  const {data: cardsData, refetch: cardsRefresh, isRefetching: isCardRefetching} = useContractRead({
     ...baccaratContract,
     functionName: 'cardsOf',
     args: [cursorData || 0, 416],
+    cacheOnBlock: true,
   })
+  const [showCard, setShowCard] = useState(true)
 
   const _betType = useMemo(() => {
     switch (betType) {
       case BaccaratBetType.Banker:
-        return 1;
+        return 0;
       case BaccaratBetType.Player:
-        return 2;
-      case BaccaratBetType.Tie:
-        return 3;
-      case BaccaratBetType.BankerPair:
-        return 4;
-      case BaccaratBetType.PlayerPair:
-        return 5;
-      case BaccaratBetType.SuperSix:
-        return 6;
-      default:
         return 1;
+      case BaccaratBetType.Tie:
+        return 2;
+      case BaccaratBetType.BankerPair:
+        return 3;
+      case BaccaratBetType.PlayerPair:
+        return 4;
+      case BaccaratBetType.SuperSix:
+        return 5;
+      default:
+        return 0;
     }
   }, [betType])
   const {config: actionConfig} = usePrepareContractWrite({
     ...baccaratContract,
     functionName: 'action',
-    args: [cheque.address, spendAmount, _betType]
+    args: [cheque.address, spendAmount, _betType],
+    overrides: {
+      value: cheque.address === AddressZero ? BigNumber.from(spendAmount) : 0,
+      gasLimit: BigNumber.from(1000000),
+    }
   })
   const {write: actionWrite, status: actionStatus} = useContractWrite(actionConfig)
+  const randomNumber = useMemo(() => {
+    return Math.floor(Math.random() * 1000000)
+  }, [])
+  const {config: shuffleConfig} = usePrepareContractWrite({
+    ...baccaratContract,
+    functionName: 'shuffle',
+    args: [randomNumber]
+  })
+  const {write: shuffleWrite, status: shuffleStatus} = useContractWrite(shuffleConfig)
+  const {config: settleConfig} = usePrepareContractWrite({
+    ...baccaratContract,
+    functionName: 'settle',
+    args: [randomNumber],
+    overrides: {
+      gasLimit: BigNumber.from(1000000),
+    }
+  })
+  const {write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
 
   useEffect(() => {
     if (balanceData) {
@@ -176,14 +201,15 @@ const Baccarat = () => {
                   suit: '♥',
                 }
               ].map((item, index) => (
-                <Stack key={index} w={'57px'} h={'88px'} border={'1px solid white'} borderRadius={'6px'} p={1}
-                       bg={'white'} boxShadow={'md'} userSelect={"none"}>
-                  <Text fontSize={'xs'} fontWeight={'bold'}
-                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
-                  <Text fontSize={'xl'} textAlign={"center"}
-                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
-                  <Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'}
-                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
+                <Stack key={index} w={'57px'} h={'88px'} border={'1px solid white'} borderRadius={'6px'} p={1} justify={"center"}
+                       bg={'blue.500'} boxShadow={'md'} userSelect={"none"}>
+                  <chakra.img src={'/icon.svg'} />
+                  {/*<Text fontSize={'xs'} fontWeight={'bold'}*/}
+                  {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>*/}
+                  {/*<Text fontSize={'xl'} textAlign={"center"}*/}
+                  {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>*/}
+                  {/*<Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'}*/}
+                  {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>*/}
                 </Stack>
               ))
             }
@@ -205,19 +231,21 @@ const Baccarat = () => {
                   suit: '♥',
                 }
               ].map((item, index) => (
-                <Stack key={index} w={'57px'} h={'88px'} border={'1px solid white'} borderRadius={'6px'} p={1}
-                       bg={'white'} boxShadow={'md'} userSelect={"none"}>
-                  <Text fontSize={'xs'} fontWeight={'bold'}
-                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
-                  <Text fontSize={'xl'} textAlign={"center"}
-                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>
-                  <Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'}
-                        color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>
+                <Stack key={index} w={'57px'} h={'88px'} border={'1px solid white'} borderRadius={'6px'} p={1} justify={"center"}
+                       bg={'blue.500'} boxShadow={'md'} userSelect={"none"}>
+                  <chakra.img src={'/icon.svg'} />
+                  {/*<Text fontSize={'xs'} fontWeight={'bold'}*/}
+                  {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>*/}
+                  {/*<Text fontSize={'xl'} textAlign={"center"}*/}
+                  {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>*/}
+                  {/*<Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'}*/}
+                  {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>*/}
                 </Stack>
               ))
             }
           </HStack>
-          <Button variant={"solid"} w={'120px'} colorScheme={'blue'}>
+          <Button variant={"solid"} w={'120px'} colorScheme={'blue'} isLoading={settleStatus === 'loading'} loadingText={'Pending...'}
+                  onClick={() => settleWrite?.()}>
             Settle
           </Button>
         </HStack>
@@ -378,10 +406,13 @@ const Baccarat = () => {
               </HStack>
             </Stack>
           </Stack>
-          <Stack h={'full'} w={'400px'} border={'2px solid white'} p={2} justify={"space-between"}>
-            <HStack justifyContent={'space-between'}>
+          <Stack h={'full'} minW={'320px'} w={'400px'} border={'2px solid white'} p={2} justify={"space-between"}>
+            <HStack>
               <Text color={'blue.200'} fontWeight={'bold'}>Shoe</Text>
-              <Button variant={"solid"} colorScheme={'blue'}>Shuffle</Button>
+              <Spacer/>
+              <Button variant={"solid"} colorScheme={'blue'} onClick={() => shuffleWrite?.()}
+                      isLoading={shuffleStatus === 'loading'} loadingText={'Pending...'}
+              >Shuffle</Button>
             </HStack>
             <Wrap justify={'center'} overflow={'scroll'} maxH={'600px'}>
               {
@@ -391,14 +422,26 @@ const Baccarat = () => {
                   suit: BigNumber,
                 }, index: number) => (
                   <WrapItem key={index}>
-                    <MiniPocker suit={item.suit} rank={item.rank} />
+                    <MiniPocker suit={item.suit} rank={item.rank} hidden={!showCard}/>
                   </WrapItem>
                 ))
               }
             </Wrap>
-            <Text color={'blue.200'} fontWeight={'semibold'} fontSize={'sm'}>
-              Left: {BigNumber.from(8*13*4).sub(BigNumber.from(chequesData || 0)).toString()} Cards
-            </Text>
+            <HStack>
+              <Text color={'blue.200'} fontWeight={'semibold'} fontSize={'sm'}>
+                Left: {BigNumber.from(8*13*4).sub(BigNumber.from(chequesData || 0)).toString()} Cards
+              </Text>
+              <Spacer/>
+              <IconButton aria-label={'refresh'} variant={'ghost'} color={'blue.200'} isLoading={isCardRefetching}
+                          borderRadius={'full'} size={'sm'}
+                          onClick={() => {
+                            if (!showCard) {
+                              cardsRefresh()
+                            }
+                            setShowCard(!showCard)
+                          }}
+                          icon={showCard ? <ViewOffIcon/> : <ViewIcon/>} />
+            </HStack>
           </Stack>
         </HStack>
       </Stack>

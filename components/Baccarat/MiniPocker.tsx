@@ -1,14 +1,15 @@
-import {Stack, Text} from "@chakra-ui/react";
+import {Stack, Text, chakra} from "@chakra-ui/react";
 import {BigNumber} from "ethers";
 import {FC, useMemo} from "react";
 
 type MiniPockerProps = {
   suit: BigNumber,
   rank: BigNumber,
+  hidden?: boolean,
 }
 
 const MiniPocker: FC<MiniPockerProps> = (props) => {
-  const {suit, rank} = props
+  const {suit, rank, hidden} = props
 
   const suitStr = useMemo(() => {
     switch (BigNumber.from(suit).toNumber()) {
@@ -39,15 +40,24 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
   }, [rank])
 
   return (
-    <Stack w={'29px'} h={'44px'} border={'1px solid white'} borderRadius={'4px'} bg={'white'}
-           spacing={0}
-           boxShadow={'sm'} p={'2px'} justify={"space-between"} userSelect={'none'}>
-      <Text fontSize={'xx-small'} lineHeight={'10px'}
-            color={suitStr === '♦' || suitStr === '♥' ? 'red' : 'black'}>{rankStr}</Text>
-      <Text fontSize={'sm'} textAlign={"center"} lineHeight={'20px'}
-            color={suitStr === '♦' || suitStr === '♥' ? 'red' : 'black'}>{suitStr}</Text>
-      <Text fontSize={'xx-small'} color={suitStr === '♦' || suitStr === '♥' ? 'red' : 'black'}
-            lineHeight={'10px'} transform={'rotate(180deg)'}>{rankStr}</Text>
+    <Stack w={'29px'} h={'44px'} border={'1px solid white'} borderRadius={'4px'} bg={hidden ? 'blue.500' : 'white'}
+           spacing={0} boxShadow={'sm'} p={'2px'} justify={hidden ? 'center' : "space-between"} userSelect={'none'}>
+      {
+        hidden ? (
+          <>
+            <chakra.img src={'/icon.svg'} />
+          </>
+        ) : (
+          <>
+            <Text fontSize={'xx-small'} lineHeight={'10px'}
+                  color={suitStr === '♦' || suitStr === '♥' ? 'red' : 'black'}>{rankStr}</Text>
+            <Text fontSize={'sm'} textAlign={"center"} lineHeight={'20px'}
+                  color={suitStr === '♦' || suitStr === '♥' ? 'red' : 'black'}>{suitStr}</Text>
+            <Text fontSize={'xx-small'} color={suitStr === '♦' || suitStr === '♥' ? 'red' : 'black'}
+                  lineHeight={'10px'} transform={'rotate(180deg)'}>{rankStr}</Text>
+          </>
+        )
+      }
     </Stack>
   )
 }

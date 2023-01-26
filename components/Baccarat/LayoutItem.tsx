@@ -16,17 +16,17 @@ const LayoutItem: FC<LayoutItemProps> = (props) => {
   const {index, amount, betType, player, token} = props
   const betTypeString = useMemo(() => {
     switch (betType.toNumber()) {
-      case 1:
+      case 0:
         return 'Banker'
-      case 2:
+      case 1:
         return 'Player'
-      case 3:
+      case 2:
         return 'Tie'
-      case 4:
+      case 3:
         return 'Banker Pair'
-      case 5:
+      case 4:
         return 'Player Pair'
-      case 6:
+      case 5:
         return 'Super Six'
       default:
         return 'Unknown'
