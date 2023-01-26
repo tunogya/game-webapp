@@ -6,6 +6,7 @@ import axios from "axios";
 import {useRouter} from "next/router";
 import {useRecoilState} from "recoil";
 import {tokenAtom} from "../state";
+import Link from "next/link";
 
 export default function Index() {
   const { address } = useAccount()
@@ -28,51 +29,51 @@ export default function Index() {
     }
   })
 
-  useEffect(() => {
-    if (!address) {
-      setStatus("wait_connect")
-    }
-    if (address && signStatus === "idle") {
-      setStatus("wait_for_signature")
-      return
-    }
-    if (address && signStatus === "success") {
-      setStatus("signature_success")
-      return
-    }
-    if (address && signStatus === "error") {
-      setStatus("signature_error")
-      setTimeout(() => {
-        setStatus("wait_for_signature")
-      }, 3000)
-      return
-    }
-  }, [address, signStatus])
+  // useEffect(() => {
+  //   if (!address) {
+  //     setStatus("wait_connect")
+  //   }
+  //   if (address && signStatus === "idle") {
+  //     setStatus("wait_for_signature")
+  //     return
+  //   }
+  //   if (address && signStatus === "success") {
+  //     setStatus("signature_success")
+  //     return
+  //   }
+  //   if (address && signStatus === "error") {
+  //     setStatus("signature_error")
+  //     setTimeout(() => {
+  //       setStatus("wait_for_signature")
+  //     }, 3000)
+  //     return
+  //   }
+  // }, [address, signStatus])
 
-  const getToken = useCallback(async () => {
-    if (signStatus === "success" && signature && message && address) {
-      const res = await axios({
-        method: "POST",
-        url: "https://api.wizardingpay.com/auth/token",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: {
-          signature,
-          message,
-          address,
-        }
-      })
-      if (res.data) {
-        setToken(res.data)
-        await router.push('/dashboard')
-      }
-    }
-  }, [address, message, signStatus, signature])
+  // const getToken = useCallback(async () => {
+  //   if (signStatus === "success" && signature && message && address) {
+  //     const res = await axios({
+  //       method: "POST",
+  //       url: "https://api.wizardingpay.com/auth/token",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       data: {
+  //         signature,
+  //         message,
+  //         address,
+  //       }
+  //     })
+  //     if (res.data) {
+  //       setToken(res.data)
+  //       await router.push('/dashboard')
+  //     }
+  //   }
+  // }, [address, message, signStatus, signature])
 
-  useEffect(() => {
-    getToken()
-  }, [getToken])
+  // useEffect(() => {
+  //   getToken()
+  // }, [getToken])
 
   return (
     <Stack p={3} spacing={6}>
@@ -80,6 +81,9 @@ export default function Index() {
       { status === 'wait_connect' && (
         <Stack>
           <ConnectButton />
+          <Link href={'/dashboard'}>
+            Dashboard
+          </Link>
         </Stack>
       ) }
       {
