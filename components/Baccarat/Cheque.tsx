@@ -1,7 +1,7 @@
 import {HStack, Stack, Text} from "@chakra-ui/react";
 import {FC} from "react";
 
-export enum BaccaratAction {
+export enum BaccaratBetType {
   Player = 'Player',
   Banker = 'Banker',
   Tie = 'Tie',
