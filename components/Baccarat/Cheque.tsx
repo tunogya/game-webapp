@@ -19,14 +19,15 @@ type ChequeProps = {
 }
 
 const Cheque: FC<ChequeProps> = (props) => {
+  const { hidden, width, height, odds, value } = props
   return (
-    <HStack position={'absolute'} hidden={props.hidden} w={props?.width || ''} h={props?.height || ''} justify={"center"} spacing={0}>
+    <HStack position={'absolute'} hidden={hidden} w={width || ''} h={height || ''} justify={"center"} spacing={0}>
       <Stack w={'full'} h={'full'} border={'2px dashed white'} bg={"rgba(0,0,0,0.6)"} justify={"center"}
              userSelect={'none'} boxShadow={'md'} alignItems={"center"} cursor={'pointer'}>
-        <Text fontWeight={'bold'} color={'white'} fontSize={'3xl'}>{props.value.toLocaleString('en-US', {
+        <Text fontWeight={'bold'} color={'white'} fontSize={'3xl'}>{value.toLocaleString('en-US', {
           maximumFractionDigits: 2,
         })}</Text>
-        <Text fontWeight={'semibold'} color={'white'} fontSize={'xs'}>Expected: {(props.value * props.odds).toLocaleString('en-US', {
+        <Text fontWeight={'semibold'} color={'white'} fontSize={'xs'}>Expected: {(value * odds).toLocaleString('en-US', {
           maximumFractionDigits: 2,
         })}</Text>
       </Stack>
