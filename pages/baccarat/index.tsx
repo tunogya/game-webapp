@@ -89,8 +89,16 @@ const Baccarat = () => {
   })
   const [showCard, setShowCard] = useState(true)
   const [cards, setCards] = useState([])
+  const [layout, setLayout] = useState([])
 
-  const refreshCards = useCallback(async () => {
+  const refreshLayout = useCallback(() => {
+    if (layoutData) {
+      // @ts-ignore
+      setLayout(layoutData)
+    }
+  }, [layoutData])
+
+  const refreshCards = useCallback(() => {
     if (cardsData && cursorData) {
       // @ts-ignore
       setCards(cardsData.filter((item, index) => {
@@ -102,6 +110,10 @@ const Baccarat = () => {
   useEffect(() => {
     refreshCards()
   }, [refreshCards])
+
+  useEffect(() => {
+    refreshLayout()
+  }, [refreshLayout])
 
   const _betType = useMemo(() => {
     switch (betType) {
@@ -378,13 +390,11 @@ const Baccarat = () => {
     return (
       <Stack h={'40%'} w={'400px'} border={'2px solid white'} overflow={'scroll'}>
         {
-          // @ts-ignore
-          layoutData?.length > 0 ? (
+          layout?.length > 0 ? (
             <Table variant='striped' colorScheme='blackAlpha'>
               <Tbody>
                 {
-                  // @ts-ignore
-                  layoutData && layoutData?.map((item: {
+                  layout?.map((item: {
                     amount: BigNumber,
                     betType: BigNumber,
                     player: Address,
