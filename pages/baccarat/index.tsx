@@ -90,11 +90,26 @@ const Baccarat = () => {
   const [showCard, setShowCard] = useState(true)
   const [cards, setCards] = useState([])
   const [layout, setLayout] = useState([])
+  const [canSettle, setCanSettle] = useState(false)
 
   const refreshLayout = useCallback(() => {
     if (layoutData) {
       // @ts-ignore
       setLayout(layoutData)
+      let banker = false;
+      let player = false;
+      // @ts-ignore
+      for (let i = 0; i< layoutData.length; i++) {
+        // @ts-ignore
+        const item = layoutData[i]
+        if (item.betType.eq(0)) {
+          banker = true
+        }
+        if (item.betType.eq(1)) {
+          player = true
+        }
+        setCanSettle(banker && player)
+      }
     }
   }, [layoutData])
 
@@ -518,7 +533,7 @@ const Baccarat = () => {
           </Text>
           {getLastHands()}
           <Button variant={"solid"} w={'120px'} colorScheme={'blue'} isLoading={settleStatus === 'loading'}
-                  loadingText={'Pending...'}
+                  loadingText={'Pending...'} disabled={!canSettle}
                   onClick={() => settleWrite?.()}>
             Settle
           </Button>
