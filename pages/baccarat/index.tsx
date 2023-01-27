@@ -51,6 +51,7 @@ const Baccarat = () => {
     chainId: chain?.id,
     address: address,
     token: cheque?.address === AddressZero ? undefined : cheque?.address,
+    watch: true,
     cacheTime: 0,
   });
   const [balance, setBalance] = useState('-');
@@ -94,8 +95,8 @@ const Baccarat = () => {
   const {data: feeData} = useFeeData({
     chainId: chain?.id,
     formatUnits: 'gwei',
-    cacheTime: 3_000,
     watch: true,
+    cacheTime: 3_000,
   })
 
   const refreshLayout = useCallback(() => {
