@@ -1,4 +1,4 @@
-import {Button, Heading, Stack, Text} from "@chakra-ui/react";
+import {Button, Heading, Stack, Text, Link} from "@chakra-ui/react";
 import {ConnectButton} from "@rainbow-me/rainbowkit";
 import {useAccount, useNetwork, useSignMessage} from "wagmi";
 import {useCallback, useEffect, useMemo, useState} from "react";
@@ -6,7 +6,6 @@ import axios from "axios";
 import {useRouter} from "next/router";
 import {useRecoilState} from "recoil";
 import {tokenAtom} from "../state";
-import Link from "next/link";
 
 export default function Index() {
   const { address } = useAccount()

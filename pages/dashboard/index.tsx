@@ -3,10 +3,10 @@ import {
   Text,
   Heading,
   Divider,
+  Link
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import CreateDuneProjectModal from "../../components/CreateDuneProjectModal";
-import Link from "next/link";
 
 const Dashboard = () => {
   return (
