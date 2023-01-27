@@ -160,7 +160,7 @@ const Baccarat = () => {
     functionName: 'action',
     args: [cheque.address, spendAmount, _betType],
     overrides: {
-      value: cheque.address === AddressZero ? BigNumber.from(spendAmount) : 0,
+      value: cheque.address === AddressZero ? BigNumber.from(spendAmount).mul(BigNumber.from(chequesData || 0)) : 0,
       gasLimit: BigNumber.from(1000000),
     }
   })
