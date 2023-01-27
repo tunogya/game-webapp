@@ -1,5 +1,5 @@
 import {
-  Button,
+  Button, Center,
   chakra,
   HStack, IconButton,
   shouldForwardProp, Spacer,
@@ -8,7 +8,7 @@ import {
   Tbody,
   Text,
   Wrap,
-  WrapItem
+  WrapItem, Link
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import HistoryBall from "../../components/Baccarat/HistoryBall";
@@ -23,7 +23,7 @@ import {
   useAccount,
   useBalance,
   useContractRead,
-  useContractWrite,
+  useContractWrite, useFeeData,
   useNetwork,
   usePrepareContractWrite
 } from "wagmi";
@@ -91,6 +91,12 @@ const Baccarat = () => {
   const [cards, setCards] = useState([])
   const [layout, setLayout] = useState([])
   const [canSettle, setCanSettle] = useState(false)
+  const { data: feeData } = useFeeData({
+    chainId: chain?.id,
+    formatUnits: 'gwei',
+    cacheTime: 3_000,
+    watch: true,
+  })
 
   const refreshLayout = useCallback(() => {
     if (layoutData) {
@@ -547,6 +553,18 @@ const Baccarat = () => {
           {getShoe()}
         </HStack>
       </Stack>
+      <Center>
+        <HStack maxW={'container.xl'} w={'full'} fontWeight={'semibold'} fontSize={'xs'}>
+          <Text color={'blue.200'}>Contract: <Link isExternal textDecoration={'underline'}
+                                                   href={`${chain?.blockExplorers?.default.url}/address/${BACCARAT_ADDRESS[chain?.id || 5]}`}>
+              {BACCARAT_ADDRESS[chain?.id || 5]}
+            </Link>
+          </Text>
+          <Spacer/>
+          <Text color={'blue.200'}>
+            Gas Price: {Number(feeData?.formatted.gasPrice).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei, {Number(feeData?.formatted.maxFeePerGas).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei, {Number(feeData?.formatted.maxPriorityFeePerGas).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei</Text>
+        </HStack>
+      </Center>
     </Stack>
   )
 }
