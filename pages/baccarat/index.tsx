@@ -1,5 +1,5 @@
 import {
-  Button, Center,
+  Button,
   chakra,
   HStack, IconButton,
   shouldForwardProp, Spacer,
@@ -91,7 +91,7 @@ const Baccarat = () => {
   const [cards, setCards] = useState([])
   const [layout, setLayout] = useState([])
   const [canSettle, setCanSettle] = useState(false)
-  const { data: feeData } = useFeeData({
+  const {data: feeData} = useFeeData({
     chainId: chain?.id,
     formatUnits: 'gwei',
     cacheTime: 3_000,
@@ -105,7 +105,7 @@ const Baccarat = () => {
       let banker = false;
       let player = false;
       // @ts-ignore
-      for (let i = 0; i< layoutData.length; i++) {
+      for (let i = 0; i < layoutData.length; i++) {
         // @ts-ignore
         const item = layoutData[i]
         if (item.betType.eq(0)) {
@@ -368,7 +368,8 @@ const Baccarat = () => {
                       setPickedCheque(index)
                     }}
                   >
-                    <Text fontWeight={'bold'} textDecoration={pickedCheque === index ? 'underline' : ''} color={item.color}>{item.label}</Text>
+                    <Text fontWeight={'bold'} textDecoration={pickedCheque === index ? 'underline' : ''}
+                          color={item.color}>{item.label}</Text>
                   </ChakraBox>
                 )).slice(-5)
               }
@@ -530,9 +531,9 @@ const Baccarat = () => {
 
   // @ts-ignore
   return (
-    <Stack h={'100vh'} w={'full'} spacing={0} overflow={'auto'} bg={"blue.600"}>
+    <Stack h={'100vh'} w={'full'} spacing={0} overflow={'auto'} bg={"blue.600"} align={"center"}>
       <TheHeader/>
-      <Stack p={'20px'} spacing={'20px'} justify={"center"}>
+      <Stack p={'20px'} maxW={'container.xl'} spacing={'20px'} justify={"center"}>
         <HStack justify={"space-around"}>
           <Text w={'120px'} color={'white'} fontWeight={'bold'}>
             Baccarat
@@ -553,18 +554,15 @@ const Baccarat = () => {
           {getShoe()}
         </HStack>
       </Stack>
-      <Center>
-        <HStack maxW={'container.xl'} w={'full'} fontWeight={'semibold'} fontSize={'xs'}>
-          <Text color={'blue.200'}>Contract: <Link isExternal textDecoration={'underline'}
-                                                   href={`${chain?.blockExplorers?.default.url}/address/${BACCARAT_ADDRESS[chain?.id || 5]}`}>
-              {BACCARAT_ADDRESS[chain?.id || 5]}
-            </Link>
-          </Text>
-          <Spacer/>
-          <Text color={'blue.200'}>
-            Gas Price: {Number(feeData?.formatted.gasPrice).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei, {Number(feeData?.formatted.maxFeePerGas).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei, {Number(feeData?.formatted.maxPriorityFeePerGas).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei</Text>
-        </HStack>
-      </Center>
+      <HStack maxW={'container.xl'} w={'full'} fontWeight={'semibold'} fontSize={'xs'} justify={"space-between"}>
+        <Text color={'blue.200'}>Contract: <Link isExternal textDecoration={'underline'}
+                                                 href={`${chain?.blockExplorers?.default.url}/address/${BACCARAT_ADDRESS[chain?.id || 5]}`}>
+          {BACCARAT_ADDRESS[chain?.id || 5]}
+        </Link></Text>
+        <Text color={'blue.200'}>
+          Gas
+          Price: {Number(feeData?.formatted.gasPrice).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei, {Number(feeData?.formatted.maxFeePerGas).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei, {Number(feeData?.formatted.maxPriorityFeePerGas).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei</Text>
+      </HStack>
     </Stack>
   )
 }
