@@ -226,7 +226,7 @@ const Baccarat = () => {
 
   const getShoe = () => {
     return (
-      <Stack h={'full'} minW={'320px'} w={'400px'} border={'2px solid white'} p={2} justify={"space-between"}>
+      <Stack h={'full'} minW={'400px'} w={'400px'} border={'2px solid white'} p={2} justify={"space-between"}>
         <HStack>
           <Text color={'blue.200'} fontWeight={'bold'}>Shoe</Text>
           <Spacer/>
@@ -234,7 +234,7 @@ const Baccarat = () => {
                   isLoading={shuffleStatus === 'loading'} loadingText={'Pending...'}
           >Shuffle</Button>
         </HStack>
-        <Wrap justify={'center'} overflow={'scroll'} maxH={'500px'}>
+        <Wrap justify={'center'} overflow={'scroll'} maxH={'520px'} py={1}>
           {
             // @ts-ignore
             cards.length > 0 && cards.map((item: {

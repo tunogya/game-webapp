@@ -46,10 +46,8 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
 
   return (
     <ChakraBox
-      drag={true}
       whileHover={{scale: 1.2, transition: { duration: 0.2 }}}
       whileTap={{ scale: 0.9 }}
-      whileDrag={{ scale: 1.2 }}
     >
       <Stack w={'29px'} h={'44px'} border={'1px solid white'} borderRadius={'4px'} bg={hidden ? 'blue.500' : 'white'}
              cursor={'pointer'} bgImage={'url(/icon.svg)'} zIndex={"base"}
