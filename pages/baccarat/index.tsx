@@ -124,7 +124,7 @@ const Baccarat = () => {
     if (cardsData && cursorData) {
       // @ts-ignore
       setCards(cardsData.filter((item, index) => {
-        return index >= BigNumber.from(cursorData).toNumber()
+        return BigNumber.from(cursorData).lte(index)
       }))
     }
   }, [cardsData, cursorData])
@@ -389,9 +389,9 @@ const Baccarat = () => {
             )}
             {value > 0 && (
               <Button variant={"solid"} colorScheme={'blue'} isLoading={actionStatus === 'loading'}
-                      loadingText={'Pending...'}
+                      loadingText={'Pending...'} disabled={BigNumber.from(cursorData || 0).eq(0)}
                       onClick={() => actionWrite?.()}>
-                Action
+                {BigNumber.from(cursorData || 0).eq(0) ? 'Need Shuffle First!' : 'Action'}
               </Button>
             )}
             {value > 0 && (

@@ -1,5 +1,5 @@
 import {Address, goerli} from "wagmi";
 
 export const BACCARAT_ADDRESS: {[p: number]: Address} = {
-  [goerli.id]: '0xCf95A5169d043f7628098D426223d416aaFA833c',
+  [goerli.id]: '0x8c3aC1bBe62bA5CF51FEC8c1061205Fda8bCa0E6',
 }
