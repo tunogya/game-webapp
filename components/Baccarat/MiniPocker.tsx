@@ -4,8 +4,7 @@ import {FC, useMemo} from "react";
 import {isValidMotionProp, motion} from "framer-motion";
 
 type MiniPockerProps = {
-  suit: BigNumber,
-  rank: BigNumber,
+  id: BigNumber,
   hidden?: boolean,
 }
 
@@ -14,23 +13,23 @@ const ChakraBox = chakra(motion.div, {
 })
 
 const MiniPocker: FC<MiniPockerProps> = (props) => {
-  const {suit, rank, hidden} = props
+  const {id, hidden} = props
 
   const suitStr = useMemo(() => {
-    switch (BigNumber.from(suit).toNumber()) {
-      case 1:
+    switch (BigNumber.from(id).toNumber() % 4) {
+      case 0:
         return '♠'
-      case 2:
+      case 1:
         return '♥'
-      case 3:
+      case 2:
         return '♦'
-      case 4:
+      case 3:
         return '♣'
     }
-  }, [suit])
+  }, [id])
 
   const rankStr = useMemo(() => {
-      switch (BigNumber.from(rank).toNumber()) {
+      switch (BigNumber.from(id).toNumber() % 13) {
         case 1:
           return 'A'
         case 11:
@@ -40,9 +39,9 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
         case 13:
           return 'K'
         default:
-          return rank.toString()
+          return id.toString()
       }
-  }, [rank])
+  }, [id])
 
   return (
     <ChakraBox

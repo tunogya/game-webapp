@@ -1,21 +1,17 @@
 export const BACCARAT_ABI = [
-  {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  }, {
+  {"inputs": [], "stateMutability": "nonpayable", "type": "constructor"}, {
     "anonymous": false,
-    "inputs": [{"indexed": true, "internalType": "uint256", "name": "_cursor", "type": "uint256"}, {
+    "inputs": [{"indexed": true, "internalType": "address", "name": "_player", "type": "address"}, {
       "indexed": true,
       "internalType": "address",
-      "name": "_player",
+      "name": "_token",
       "type": "address"
-    }, {"indexed": false, "internalType": "address", "name": "_token", "type": "address"}, {
+    }, {"indexed": false, "internalType": "uint256", "name": "_amount", "type": "uint256"}, {
       "indexed": false,
       "internalType": "uint256",
-      "name": "_amount",
+      "name": "_betType",
       "type": "uint256"
-    }, {"indexed": false, "internalType": "uint256", "name": "_betType", "type": "uint256"}],
+    }],
     "name": "Action",
     "type": "event"
   }, {
@@ -25,58 +21,44 @@ export const BACCARAT_ABI = [
     "type": "event"
   }, {
     "anonymous": false,
-    "inputs": [{"indexed": true, "internalType": "address", "name": "previousOwner", "type": "address"}, {
+    "inputs": [{
       "indexed": true,
       "internalType": "address",
-      "name": "newOwner",
+      "name": "previousOwner",
       "type": "address"
-    }],
+    }, {"indexed": true, "internalType": "address", "name": "newOwner", "type": "address"}],
     "name": "OwnershipTransferred",
     "type": "event"
   }, {
     "anonymous": false,
     "inputs": [{
-      "indexed": true,
-      "internalType": "uint256",
-      "name": "_cursor",
-      "type": "uint256"
-    }, {
-      "components": [{"internalType": "bool", "name": "banker", "type": "bool"}, {
-        "internalType": "bool",
-        "name": "player",
-        "type": "bool"
-      }, {"internalType": "bool", "name": "tie", "type": "bool"}, {
-        "internalType": "bool",
-        "name": "bankerPair",
-        "type": "bool"
-      }, {"internalType": "bool", "name": "playerPair", "type": "bool"}, {
-        "internalType": "bool",
-        "name": "superSix",
-        "type": "bool"
-      }], "indexed": false, "internalType": "struct IBaccarat.ActionResult", "name": "result", "type": "tuple"
-    }, {
-      "components": [{"internalType": "uint8", "name": "rank", "type": "uint8"}, {
+      "components": [{"internalType": "uint16", "name": "cursor", "type": "uint16"}, {
         "internalType": "uint8",
-        "name": "suit",
+        "name": "bankerPoints",
         "type": "uint8"
-      }], "indexed": false, "internalType": "struct IBaccarat.Card[]", "name": "bankerHands", "type": "tuple[]"
-    }, {
-      "components": [{"internalType": "uint8", "name": "rank", "type": "uint8"}, {
+      }, {"internalType": "uint8", "name": "playerPoints", "type": "uint8"}, {
         "internalType": "uint8",
-        "name": "suit",
+        "name": "bankerHands1",
         "type": "uint8"
-      }], "indexed": false, "internalType": "struct IBaccarat.Card[]", "name": "playerHands", "type": "tuple[]"
+      }, {"internalType": "uint8", "name": "bankerHands2", "type": "uint8"}, {
+        "internalType": "uint8",
+        "name": "bankerHands3",
+        "type": "uint8"
+      }, {"internalType": "uint8", "name": "playerHands1", "type": "uint8"}, {
+        "internalType": "uint8",
+        "name": "playerHands2",
+        "type": "uint8"
+      }, {"internalType": "uint8", "name": "playerHands3", "type": "uint8"}],
+      "indexed": false,
+      "internalType": "struct IBaccarat.SettleResult",
+      "name": "result",
+      "type": "tuple"
     }],
     "name": "Settle",
     "type": "event"
   }, {
     "anonymous": false,
-    "inputs": [{"indexed": false, "internalType": "uint256", "name": "_cursor", "type": "uint256"}, {
-      "indexed": false,
-      "internalType": "uint256",
-      "name": "_nonce",
-      "type": "uint256"
-    }],
+    "inputs": [{"indexed": false, "internalType": "uint256", "name": "_nonce", "type": "uint256"}],
     "name": "Shuffle",
     "type": "event"
   }, {
@@ -90,19 +72,13 @@ export const BACCARAT_ABI = [
     "stateMutability": "payable",
     "type": "function"
   }, {
-    "inputs": [{"internalType": "uint256", "name": "cursor_", "type": "uint256"}, {
+    "inputs": [{"internalType": "uint256", "name": "from_", "type": "uint256"}, {
       "internalType": "uint256",
       "name": "count_",
       "type": "uint256"
     }],
     "name": "cardsOf",
-    "outputs": [{
-      "components": [{"internalType": "uint8", "name": "rank", "type": "uint8"}, {
-        "internalType": "uint8",
-        "name": "suit",
-        "type": "uint8"
-      }], "internalType": "struct IBaccarat.Card[]", "name": "", "type": "tuple[]"
-    }],
+    "outputs": [{"internalType": "uint8[]", "name": "", "type": "uint8[]"}],
     "stateMutability": "view",
     "type": "function"
   }, {
@@ -157,6 +133,38 @@ export const BACCARAT_ABI = [
     "name": "settle",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  }, {
+    "inputs": [{"internalType": "uint256", "name": "from_", "type": "uint256"}, {
+      "internalType": "uint256",
+      "name": "count_",
+      "type": "uint256"
+    }],
+    "name": "settleResultsOf",
+    "outputs": [{
+      "components": [{
+        "internalType": "uint16",
+        "name": "cursor",
+        "type": "uint16"
+      }, {"internalType": "uint8", "name": "bankerPoints", "type": "uint8"}, {
+        "internalType": "uint8",
+        "name": "playerPoints",
+        "type": "uint8"
+      }, {"internalType": "uint8", "name": "bankerHands1", "type": "uint8"}, {
+        "internalType": "uint8",
+        "name": "bankerHands2",
+        "type": "uint8"
+      }, {"internalType": "uint8", "name": "bankerHands3", "type": "uint8"}, {
+        "internalType": "uint8",
+        "name": "playerHands1",
+        "type": "uint8"
+      }, {"internalType": "uint8", "name": "playerHands2", "type": "uint8"}, {
+        "internalType": "uint8",
+        "name": "playerHands3",
+        "type": "uint8"
+      }], "internalType": "struct IBaccarat.SettleResult[]", "name": "", "type": "tuple[]"
+    }],
+    "stateMutability": "view",
     "type": "function"
   }, {
     "inputs": [{"internalType": "uint256", "name": "_nonce", "type": "uint256"}],

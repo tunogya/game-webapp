@@ -30,7 +30,7 @@ import {
 import {AddressZero} from "@ethersproject/constants";
 import ApproveERC20Button from "../../components/ApproveERC20Button";
 import {BACCARAT_ADDRESS} from "../../constant/address";
-import {BigNumber, Contract, ethers} from "ethers";
+import {BigNumber, ethers} from "ethers";
 import {BACCARAT_ABI} from "../../constant/abi";
 import LayoutItem from "../../components/Baccarat/LayoutItem";
 import MiniPocker from "../../components/Baccarat/MiniPocker";
@@ -244,12 +244,9 @@ const Baccarat = () => {
         <Wrap justify={'center'} overflow={'scroll'} maxH={'520px'} py={1}>
           {
             // @ts-ignore
-            cards.length > 0 && cards.map((item: {
-              rank: BigNumber,
-              suit: BigNumber,
-            }, index: number) => (
+            cards.length > 0 && cards.map((item: BigNumber, index: number) => (
               <WrapItem key={index}>
-                <MiniPocker suit={item.suit} rank={item.rank} hidden={!showCard}/>
+                <MiniPocker id={item} hidden={!showCard}/>
               </WrapItem>
             ))
           }
