@@ -25,7 +25,7 @@ import {
   useContractRead,
   useContractWrite, useFeeData,
   useNetwork,
-  usePrepareContractWrite
+  usePrepareContractWrite, useWaitForTransaction
 } from "wagmi";
 import {AddressZero} from "@ethersproject/constants";
 import ApproveERC20Button from "../../components/ApproveERC20Button";
@@ -161,11 +161,12 @@ const Baccarat = () => {
     args: [cheque?.address, spendAmount, _betType],
     overrides: {
       value: cheque?.address === AddressZero ? BigNumber.from(spendAmount).mul(BigNumber.from(chequesData || 0)) : 0,
-      // test 160,000 gwei
-      gasLimit: BigNumber.from(200_000),
-    }
+    },
   })
-  const {write: actionWrite, status: actionStatus} = useContractWrite(actionConfig)
+  const {data: actionData, write: actionWrite, status: actionStatus} = useContractWrite(actionConfig)
+  const { status: actionStatus2 } = useWaitForTransaction({
+    hash: actionData?.hash,
+  })
   const randomNumber = useMemo(() => {
     const randomBytes = ethers.utils.randomBytes(32)
     return BigNumber.from(randomBytes)
@@ -174,27 +175,33 @@ const Baccarat = () => {
     ...baccaratContract,
     functionName: 'shuffle',
     args: [randomNumber],
-    overrides: {
-      // test shuffle 3,050,000 gwei
-      gasLimit: BigNumber.from(4_000_000),
-    }
   })
-  const {write: shuffleWrite, status: shuffleStatus} = useContractWrite(shuffleConfig)
+  const {data: shuffleData, write: shuffleWrite, status: shuffleStatus} = useContractWrite(shuffleConfig)
+  const {status: shuffleStatus2 } = useWaitForTransaction({
+    hash: shuffleData?.hash,
+  })
   const {config: settleConfig} = usePrepareContractWrite({
     ...baccaratContract,
     functionName: 'settle',
     args: [randomNumber],
-    overrides: {
-      gasLimit: BigNumber.from(10_000_000),
-    }
   })
-  const {write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
+  const {data: settleData, write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
+  const {status: settleStatus2 } = useWaitForTransaction({
+    hash: settleData?.hash,
+  })
   const [fee, setFee] = useState<{
     gasPrice: string | null,
     maxFeePerGas: string | null,
     maxPriorityFeePerGas: string | null
   } | null>(null)
   const [contractLink, setContractLink] = useState('')
+
+  useEffect(() => {
+    if (actionStatus2 === 'success') {
+      setBetType(null)
+      setValue(0)
+    }
+  }, [actionStatus2])
 
   useEffect(() => {
     if (feeData) {
@@ -266,7 +273,7 @@ const Baccarat = () => {
           <Text color={'blue.200'} fontWeight={'bold'}>Shoe</Text>
           <Spacer/>
           <Button variant={"solid"} colorScheme={'blue'} onClick={() => shuffleWrite?.()}
-                  isLoading={shuffleStatus === 'loading'} loadingText={'Pending...'}
+                  isLoading={shuffleStatus === 'loading' || shuffleStatus2 === 'loading'} loadingText={'Pending...'}
           >Shuffle</Button>
         </HStack>
         <Wrap justify={'center'} overflow={'scroll'} maxH={'520px'} py={1}>
@@ -412,7 +419,7 @@ const Baccarat = () => {
                                   spendAmount={spendAmount}/>
             )}
             {value > 0 && (
-              <Button variant={"solid"} colorScheme={'blue'} isLoading={actionStatus === 'loading'}
+              <Button variant={"solid"} colorScheme={'blue'} isLoading={actionStatus === 'loading' || actionStatus2 === 'loading'}
                       loadingText={'Pending...'}
                       onClick={() => actionWrite?.()}>
                 Action
@@ -564,7 +571,7 @@ const Baccarat = () => {
             Baccarat
           </Text>
           {getLastHands()}
-          <Button variant={"solid"} w={'120px'} colorScheme={'blue'} isLoading={settleStatus === 'loading'}
+          <Button variant={"solid"} w={'120px'} colorScheme={'blue'} isLoading={settleStatus === 'loading' || settleStatus2 === 'loading'}
                   loadingText={'Pending...'} disabled={!canSettle}
                   onClick={() => settleWrite?.()}>
             Settle
