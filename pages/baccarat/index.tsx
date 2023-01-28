@@ -194,6 +194,7 @@ const Baccarat = () => {
     maxFeePerGas: string | null,
     maxPriorityFeePerGas: string | null
   } | null>(null)
+  const [contractLink, setContractLink] = useState('')
 
   useEffect(() => {
     if (feeData) {
@@ -204,6 +205,12 @@ const Baccarat = () => {
       })
     }
   }, [feeData])
+
+  useEffect(() => {
+    if (chain) {
+      setContractLink(`${chain?.blockExplorers?.default.url}/address/${BACCARAT_ADDRESS[chain?.id || 5]}`)
+    }
+  }, [chain])
 
   useEffect(() => {
     if (balanceData && chequesData) {
@@ -574,7 +581,7 @@ const Baccarat = () => {
       </Stack>
       <HStack maxW={'container.xl'} w={'full'} fontWeight={'semibold'} fontSize={'xs'} justify={"space-between"}>
         <Text color={'blue.200'}>Contract: <Link isExternal textDecoration={'underline'}
-                                                 href={`${chain?.blockExplorers?.default.url}/address/${BACCARAT_ADDRESS[chain?.id || 5]}`}>
+                                                 href={contractLink}>
           {BACCARAT_ADDRESS[chain?.id || 5]}
         </Link></Text>
         <Text color={'blue.200'}>
