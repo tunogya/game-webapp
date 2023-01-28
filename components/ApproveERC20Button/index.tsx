@@ -46,8 +46,8 @@ const ApproveERC20Button: FC<ApproveERC20ButtonProps> = (props: any) => {
     <>
       {
         BigNumber.from(allowance).lt(BigNumber.from(spendAmount)) && (
-          <Button variant={"solid"} colorScheme={'blue'} onClick={() => approve?.()} w={'full'} isLoading={approveStatus === 'loading'} loadingText={"Approving..."}>
-            Approve {approveStatus === 'success' && "Success"} {approveStatus === 'error' && "Error"}
+          <Button variant={"solid"} colorScheme={'blue'} onClick={() => approve?.()} w={'full'} isLoading={approveStatus === 'loading'}>
+            Approve
           </Button>
         )
       }
