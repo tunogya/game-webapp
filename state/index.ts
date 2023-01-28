@@ -1,5 +1,6 @@
 import {atom} from "recoil";
 import {recoilPersist} from "recoil-persist";
+import {Address} from "wagmi";
 
 const { persistAtom } = recoilPersist()
 
@@ -9,14 +10,16 @@ export const tokenAtom = atom({
   effects_UNSTABLE: [persistAtom],
 })
 
-export const baccaratChequeAtom = atom({
+export type ChequeType = {
+  chainId: number,
+  address: Address,
+  symbol: string,
+  name: string,
+  decimals: number,
+}
+
+export const baccaratChequeAtom = atom<ChequeType | undefined>({
   key: 'baccaratCheque',
-  default: {
-    chainId: 1,
-    address: '',
-    symbol: '-',
-    name: '-',
-    decimals: 18,
-  },
+  default: undefined,
   effects_UNSTABLE: [persistAtom],
 })

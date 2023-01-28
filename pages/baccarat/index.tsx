@@ -17,7 +17,7 @@ import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratBetType} from "../../components/Baccarat/Cheque";
 import PickTokenModal from "../../components/Baccarat/PickTokenModal";
 import {useRecoilValue} from "recoil";
-import {baccaratChequeAtom} from "../../state";
+import {baccaratChequeAtom, ChequeType} from "../../state";
 import {
   Address,
   useAccount,
@@ -46,14 +46,15 @@ const Baccarat = () => {
   const [pickedCheque, setPickedCheque] = useState(0);
   const [betType, setBetType] = useState<BaccaratBetType | null>(null);
   const [value, setValue] = useState(0);
-  const cheque = useRecoilValue(baccaratChequeAtom);
+  const [cheque, setCheque] = useState<ChequeType | undefined>(undefined)
   const {data: balanceData} = useBalance({
     chainId: chain?.id,
     address: address,
     token: cheque?.address === AddressZero ? undefined : cheque?.address,
     watch: true,
   });
-  const [balance, setBalance] = useState('-');
+  const [balance, setBalance] = useState('');
+  const chequeTokenData = useRecoilValue(baccaratChequeAtom);
   const spendAmount = useMemo(() => {
     return BigNumber.from(value).mul(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toString()
   }, [cheque, value])
@@ -69,7 +70,7 @@ const Baccarat = () => {
   const {data: chequesData} = useContractRead({
     ...baccaratContract,
     functionName: 'chequesOf',
-    args: [address, cheque.address],
+    args: [address, cheque?.address],
     watch: true,
   })
   const {data: layoutData} = useContractRead({
@@ -96,7 +97,26 @@ const Baccarat = () => {
     watch: true,
   })
 
-  const refreshLayout = useCallback(() => {
+  useEffect(() => {
+    if (chequeTokenData) {
+      setCheque(chequeTokenData)
+    }
+  }, [chequeTokenData])
+
+  const refreshCards = useCallback(() => {
+    if (cardsData && cursorData) {
+      // @ts-ignore
+      setCards(cardsData.filter((item, index) => {
+        return BigNumber.from(cursorData).lte(index)
+      }))
+    }
+  }, [cardsData, cursorData])
+
+  useEffect(() => {
+    refreshCards()
+  }, [refreshCards])
+
+  useEffect(() => {
     if (layoutData) {
       // @ts-ignore
       setLayout(layoutData)
@@ -116,23 +136,6 @@ const Baccarat = () => {
       }
     }
   }, [layoutData])
-
-  const refreshCards = useCallback(() => {
-    if (cardsData && cursorData) {
-      // @ts-ignore
-      setCards(cardsData.filter((item, index) => {
-        return BigNumber.from(cursorData).lte(index)
-      }))
-    }
-  }, [cardsData, cursorData])
-
-  useEffect(() => {
-    refreshCards()
-  }, [refreshCards])
-
-  useEffect(() => {
-    refreshLayout()
-  }, [refreshLayout])
 
   const _betType = useMemo(() => {
     switch (betType) {
@@ -155,9 +158,9 @@ const Baccarat = () => {
   const {config: actionConfig} = usePrepareContractWrite({
     ...baccaratContract,
     functionName: 'action',
-    args: [cheque.address, spendAmount, _betType],
+    args: [cheque?.address, spendAmount, _betType],
     overrides: {
-      value: cheque.address === AddressZero ? BigNumber.from(spendAmount).mul(BigNumber.from(chequesData || 0)) : 0,
+      value: cheque?.address === AddressZero ? BigNumber.from(spendAmount).mul(BigNumber.from(chequesData || 0)) : 0,
       // test 160,000 gwei
       gasLimit: BigNumber.from(200_000),
     }
@@ -186,6 +189,21 @@ const Baccarat = () => {
     }
   })
   const {write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
+  const [fee, setFee] = useState<{
+    gasPrice: string | null,
+    maxFeePerGas: string | null,
+    maxPriorityFeePerGas: string | null
+  } | null>(null)
+
+  useEffect(() => {
+    if (feeData) {
+      setFee({
+        gasPrice: Number(feeData?.formatted.gasPrice).toLocaleString(),
+        maxFeePerGas: Number(feeData?.formatted.maxFeePerGas).toLocaleString(),
+        maxPriorityFeePerGas: Number(feeData?.formatted.maxPriorityFeePerGas).toLocaleString(),
+      })
+    }
+  }, [feeData])
 
   useEffect(() => {
     if (balanceData && chequesData) {
@@ -334,8 +352,8 @@ const Baccarat = () => {
             <HStack spacing={'20px'}>
               {
                 cheques.filter((item) => {
-                  if (balanceData) {
-                    return item.value <= Number(balanceData?.formatted)
+                  if (balance) {
+                    return item.value <= Number(balance)
                   }
                   return true
                 }).map((item, index) => (
@@ -376,15 +394,14 @@ const Baccarat = () => {
               }
             </HStack>
             <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
-              {balance} {value > 0 && `- ${value.toLocaleString('en-US', {
-              maximumFractionDigits: 2,
-            })}`} {cheque.symbol}
+              {balance} {value > 0 && `- ${value.toLocaleString()}`}
+              {cheque && cheque.symbol}
             </Text>
           </Stack>
           <Spacer/>
           <HStack>
-            {cheque.address !== AddressZero && address && (
-              <ApproveERC20Button token={cheque.address} owner={address} spender={BACCARAT_ADDRESS[chain?.id || 5]}
+            {cheque && cheque?.address !== AddressZero && address && (
+              <ApproveERC20Button token={cheque?.address} owner={address} spender={BACCARAT_ADDRESS[chain?.id || 5]}
                                   spendAmount={spendAmount}/>
             )}
             {value > 0 && (
@@ -562,7 +579,7 @@ const Baccarat = () => {
         </Link></Text>
         <Text color={'blue.200'}>
           Gas
-          Price: {Number(feeData?.formatted.gasPrice).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei, {Number(feeData?.formatted.maxFeePerGas).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei, {Number(feeData?.formatted.maxPriorityFeePerGas).toLocaleString('en-US', {maximumFractionDigits: 3})} gwei</Text>
+          Price: {fee?.gasPrice} gwei, {fee?.maxFeePerGas} gwei, {fee?.maxPriorityFeePerGas} gwei</Text>
       </HStack>
     </Stack>
   )
