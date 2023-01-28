@@ -30,7 +30,7 @@ import {
 import {AddressZero} from "@ethersproject/constants";
 import ApproveERC20Button from "../../components/ApproveERC20Button";
 import {BACCARAT_ADDRESS} from "../../constant/address";
-import {BigNumber} from "ethers";
+import {BigNumber, Contract, ethers} from "ethers";
 import {BACCARAT_ABI} from "../../constant/abi";
 import LayoutItem from "../../components/Baccarat/LayoutItem";
 import MiniPocker from "../../components/Baccarat/MiniPocker";
@@ -52,7 +52,6 @@ const Baccarat = () => {
     address: address,
     token: cheque?.address === AddressZero ? undefined : cheque?.address,
     watch: true,
-    cacheTime: 0,
   });
   const [balance, setBalance] = useState('-');
   const spendAmount = useMemo(() => {
@@ -66,27 +65,23 @@ const Baccarat = () => {
     ...baccaratContract,
     functionName: 'cursor',
     watch: true,
-    cacheOnBlock: true,
   })
   const {data: chequesData} = useContractRead({
     ...baccaratContract,
     functionName: 'chequesOf',
     args: [address, cheque.address],
     watch: true,
-    cacheOnBlock: true,
   })
   const {data: layoutData} = useContractRead({
     ...baccaratContract,
     functionName: 'layout',
     watch: true,
-    cacheOnBlock: true,
   })
   const {data: cardsData} = useContractRead({
     ...baccaratContract,
     functionName: 'cardsOf',
     args: [0, 416],
     watch: true,
-    cacheOnBlock: true,
   })
   const [showCard, setShowCard] = useState(true)
   const [cards, setCards] = useState([])
@@ -96,7 +91,6 @@ const Baccarat = () => {
     chainId: chain?.id,
     formatUnits: 'gwei',
     watch: true,
-    cacheTime: 3_000,
   })
 
   const refreshLayout = useCallback(() => {
@@ -161,17 +155,23 @@ const Baccarat = () => {
     args: [cheque.address, spendAmount, _betType],
     overrides: {
       value: cheque.address === AddressZero ? BigNumber.from(spendAmount).mul(BigNumber.from(chequesData || 0)) : 0,
-      gasLimit: BigNumber.from(1000000),
+      // test 160,000 gwei
+      gasLimit: BigNumber.from(200_000),
     }
   })
   const {write: actionWrite, status: actionStatus} = useContractWrite(actionConfig)
   const randomNumber = useMemo(() => {
-    return Math.floor(Math.random() * 1000000)
+    const randomBytes = ethers.utils.randomBytes(32)
+    return BigNumber.from(randomBytes)
   }, [])
   const {config: shuffleConfig} = usePrepareContractWrite({
     ...baccaratContract,
     functionName: 'shuffle',
-    args: [randomNumber]
+    args: [randomNumber],
+    overrides: {
+      // test shuffle 3,050,000 gwei
+      gasLimit: BigNumber.from(4_000_000),
+    }
   })
   const {write: shuffleWrite, status: shuffleStatus} = useContractWrite(shuffleConfig)
   const {config: settleConfig} = usePrepareContractWrite({
@@ -389,9 +389,9 @@ const Baccarat = () => {
             )}
             {value > 0 && (
               <Button variant={"solid"} colorScheme={'blue'} isLoading={actionStatus === 'loading'}
-                      loadingText={'Pending...'} disabled={BigNumber.from(cursorData || 0).eq(0)}
+                      loadingText={'Pending...'}
                       onClick={() => actionWrite?.()}>
-                {BigNumber.from(cursorData || 0).eq(0) ? 'Need Shuffle First!' : 'Action'}
+                Action
               </Button>
             )}
             {value > 0 && (
