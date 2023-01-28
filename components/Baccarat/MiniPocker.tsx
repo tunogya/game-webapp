@@ -16,7 +16,8 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
   const {id, hidden} = props
 
   const suitStr = useMemo(() => {
-    switch (BigNumber.from(id).toNumber() % 4) {
+    const suit = BigNumber.from(id).mod(4).toNumber()
+    switch (suit) {
       case 0:
         return '♠'
       case 1:
@@ -29,24 +30,25 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
   }, [id])
 
   const rankStr = useMemo(() => {
-      switch (BigNumber.from(id).toNumber() % 13) {
-        case 1:
-          return 'A'
-        case 11:
-          return 'J'
-        case 12:
-          return 'Q'
-        case 13:
-          return 'K'
-        default:
-          return id.toString()
-      }
+    const rank = BigNumber.from(id).mod(13).toNumber()
+    switch (rank) {
+      case 1:
+        return 'A'
+      case 11:
+        return 'J'
+      case 12:
+        return 'Q'
+      case 0:
+        return 'K'
+      default:
+        return rank
+    }
   }, [id])
 
   return (
     <ChakraBox
-      whileHover={{scale: 1.2, transition: { duration: 0.2 }}}
-      whileTap={{ scale: 0.9 }}
+      whileHover={{scale: 1.2, transition: {duration: 0.2}}}
+      whileTap={{scale: 0.9}}
     >
       <Stack w={'29px'} h={'44px'} border={'1px solid white'} borderRadius={'4px'} bg={hidden ? 'blue.500' : 'white'}
              cursor={'pointer'} bgImage={'url(/icon.svg)'} zIndex={"base"}

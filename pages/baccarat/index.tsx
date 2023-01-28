@@ -79,9 +79,12 @@ const Baccarat = () => {
   })
   const {data: cardsData} = useContractRead({
     ...baccaratContract,
-    functionName: 'cardsOf',
-    args: [0, 416],
+    functionName: 'shoe',
     watch: true,
+  })
+  const {data: resultsData} = useContractRead({
+    ...baccaratContract,
+    functionName: 'results',
   })
   const [showCard, setShowCard] = useState(true)
   const [cards, setCards] = useState([])
