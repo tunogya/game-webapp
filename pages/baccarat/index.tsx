@@ -11,7 +11,7 @@ import {
   WrapItem, Link
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
-import HistoryBall from "../../components/Baccarat/HistoryBall";
+import HistoryBall, {ResultType} from "../../components/Baccarat/HistoryBall";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratBetType} from "../../components/Baccarat/Cheque";
@@ -96,6 +96,14 @@ const Baccarat = () => {
     formatUnits: 'gwei',
     watch: true,
   })
+  const [results, setResults] = useState<ResultType[]>([])
+
+  useEffect(() => {
+    if (resultsData) {
+      // @ts-ignore
+      setResults(resultsData)
+    }
+  }, [resultsData])
 
   useEffect(() => {
     if (chequeTokenData) {
@@ -175,6 +183,9 @@ const Baccarat = () => {
     ...baccaratContract,
     functionName: 'shuffle',
     args: [randomNumber],
+    overrides: {
+      gasLimit: BigNumber.from(1_200_000),
+    }
   })
   const {data: shuffleData, write: shuffleWrite, status: shuffleStatus} = useContractWrite(shuffleConfig)
   const {status: shuffleStatus2 } = useWaitForTransaction({
@@ -184,6 +195,9 @@ const Baccarat = () => {
     ...baccaratContract,
     functionName: 'settle',
     args: [randomNumber],
+    overrides: {
+      gasLimit: BigNumber.from(2_000_000),
+    }
   })
   const {data: settleData, write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
   const {status: settleStatus2 } = useWaitForTransaction({
@@ -473,12 +487,15 @@ const Baccarat = () => {
       <Stack h={'60%'} w={'400px'} border={'2px solid white'} p={2}>
         <Text color={'blue.200'} fontWeight={'bold'}>History</Text>
         <Wrap>
-          <WrapItem>
-            <HistoryBall banker={true} player={false} tie={false} bPair={true} pPair={false} super6={true}/>
-          </WrapItem>
-          <WrapItem>
-            <HistoryBall banker={true} player={false} tie={false} bPair={false} pPair={false} super6={false}/>
-          </WrapItem>
+          {
+            results.length > 0 ? results.map((item, index) => (
+              <WrapItem key={index}>
+                <HistoryBall index={index} result={item}/>
+              </WrapItem>
+            )).reverse() : (
+              <Text color={'blue.200'} fontWeight={'bold'} p={2}>No history.</Text>
+            )
+          }
         </Wrap>
       </Stack>
     )
