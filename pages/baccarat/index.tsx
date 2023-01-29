@@ -508,9 +508,9 @@ const Baccarat = () => {
         <HStack>
           {
             [
-              results[results.length - 1].bankerHands1 || 0,
-              results[results.length - 1].bankerHands2 || 0,
-              results[results.length - 1].bankerHands3 || 0,
+              results[results.length - 1]?.bankerHands1 || 0,
+              results[results.length - 1]?.bankerHands2 || 0,
+              results[results.length - 1]?.bankerHands3 || 0,
             ].map((item, index) => (
               <MiniPocker id={item} key={index} width={'57px'} height={'88px'}/>
             ))
@@ -522,9 +522,9 @@ const Baccarat = () => {
         <HStack>
           {
             [
-              results[results.length - 1].playerHands1 || 0,
-              results[results.length - 1].playerHands2 || 0,
-              results[results.length - 1].playerHands3 || 0,
+              results[results.length - 1]?.playerHands1 || 0,
+              results[results.length - 1]?.playerHands2 || 0,
+              results[results.length - 1]?.playerHands3 || 0,
             ].map((item, index) => (
               <MiniPocker id={item} key={index} width={'57px'} height={'88px'}/>
             ))
