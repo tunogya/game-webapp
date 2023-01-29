@@ -45,7 +45,11 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
     }
   }, [id])
 
-  if (BigNumber.from(id).eq(0)) return (<></>)
+  if (BigNumber.from(id).eq(0)) return (
+    <Stack w={'29px'} h={'44px'} border={'1px solid gray'} borderRadius={'4px'} bg={hidden ? 'blue.500' : 'white'}
+           cursor={'pointer'} zIndex={"base"} boxShadow={'sm'} p={'2px'} userSelect={'none'}>
+    </Stack>
+  )
 
   return (
     <ChakraBox

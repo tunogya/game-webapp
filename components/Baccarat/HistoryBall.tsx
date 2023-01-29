@@ -1,6 +1,14 @@
-import {Stack, Text, Tooltip} from "@chakra-ui/react";
+import {
+  Divider, HStack, Popover, PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import {FC} from "react";
 import {BigNumber} from "ethers";
+import MiniPocker from "./MiniPocker";
 
 export type ResultType = {
   cursor: BigNumber,
@@ -40,16 +48,45 @@ const HistoryBall: FC<HistoryBallProps> = (props) => {
   const tie = BigNumber.from(bankerPoints).eq(playerPoints)
 
   return (
-    <Stack w={'40px'} h={'40px'} bg={player ? 'white' : (banker ? 'red.200' : '')}
-           border={banker ? '' : '2px solid white'} cursor={'pointer'}
-           borderRadius={'full'} alignItems={"center"} justify={"center"}>
-      <Text color={player ? 'black' : 'white'} fontWeight={'bold'}
-            textDecoration={(bPair || pPair) ? 'underline' : ''}>
-        {banker && (super6 ? '6' : 'B')}
-        {player && 'P'}
-        {tie && 'T'}
-      </Text>
-    </Stack>
+    <Popover trigger={'hover'} openDelay={0} closeDelay={0}>
+      <PopoverTrigger>
+        <Stack w={'40px'} h={'40px'} bg={player ? 'white' : (banker ? 'red.200' : '')}
+               border={banker ? '' : '2px solid white'} cursor={'pointer'}
+               borderRadius={'full'} alignItems={"center"} justify={"center"}>
+          <Text color={player ? 'black' : 'white'} fontWeight={'bold'}
+                textDecoration={(bPair || pPair) ? 'underline' : ''}>
+            {banker && (super6 ? '6' : 'B')}
+            {player && 'P'}
+            {tie && 'T'}
+          </Text>
+        </Stack>
+      </PopoverTrigger>
+      <PopoverContent>
+        <PopoverArrow />
+        <PopoverBody>
+          <Stack>
+            <Text fontSize={'xx-small'}>No: {BigNumber.from(cursor).toString()}</Text>
+            <HStack justifyContent={'space-between'}>
+              <Text fontSize={'sm'} fontWeight={'bold'}>Banker: {BigNumber.from(bankerPoints).toString()}</Text>
+              <Text fontSize={'sm'} fontWeight={'bold'}>Player: {BigNumber.from(playerPoints).toString()}</Text>
+            </HStack>
+            <HStack justify={'space-between'}>
+              <HStack p={2}>
+                <MiniPocker id={bankerHands1} hidden={false}/>
+                <MiniPocker id={bankerHands2} hidden={false}/>
+                <MiniPocker id={bankerHands3} hidden={false}/>
+              </HStack>
+              <Divider orientation={'vertical'} height={'40px'}/>
+              <HStack p={2}>
+                <MiniPocker id={playerHands1} hidden={false}/>
+                <MiniPocker id={playerHands2} hidden={false}/>
+                <MiniPocker id={playerHands3} hidden={false}/>
+              </HStack>
+            </HStack>
+          </Stack>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
   )
 }
 
