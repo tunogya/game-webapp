@@ -469,7 +469,7 @@ const Baccarat = () => {
                   }, index: number) => (
                     <LayoutItem key={index} index={index + 1} amount={item.amount} betType={item.betType}
                                 player={item.player} token={item.token}/>
-                  ))
+                  )).reverse()
                 }
               </Tbody>
             </Table>
