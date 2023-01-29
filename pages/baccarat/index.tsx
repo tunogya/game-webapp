@@ -53,7 +53,7 @@ const Baccarat = () => {
     token: cheque?.address === AddressZero ? undefined : cheque?.address,
     watch: true,
   });
-  const [balance, setBalance] = useState('');
+  const [balance, setBalance] = useState(0);
   const chequeTokenData = useRecoilValue(baccaratChequeAtom);
   const spendAmount = useMemo(() => {
     return BigNumber.from(value).mul(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toString()
@@ -238,9 +238,7 @@ const Baccarat = () => {
     if (balanceData && chequesData) {
       const balance = BigNumber.from(balanceData.value).add(BigNumber.from(chequesData))
       const formatted = balance.div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber()
-      setBalance(formatted.toLocaleString('en-US', {
-        maximumFractionDigits: 2,
-      }))
+      setBalance(formatted)
     }
   }, [balanceData, cheque?.decimals, chequesData])
 
@@ -382,7 +380,7 @@ const Baccarat = () => {
               {
                 cheques.filter((item) => {
                   if (balance) {
-                    return item.value <= Number(balance)
+                    return item.value <= balance
                   }
                   return true
                 }).map((item, index) => (
@@ -423,7 +421,7 @@ const Baccarat = () => {
               }
             </HStack>
             <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
-              {balance} {value > 0 && `- ${value.toLocaleString()}`}
+              {balance.toLocaleString()} {value > 0 && `- ${value.toLocaleString()}`}
               {cheque && cheque.symbol}
             </Text>
           </Stack>
