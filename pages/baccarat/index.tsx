@@ -169,7 +169,8 @@ const Baccarat = () => {
     functionName: 'action',
     args: [cheque?.address, spendAmount, _betType],
     overrides: {
-      value: cheque?.address === AddressZero ? BigNumber.from(spendAmount).mul(BigNumber.from(chequesData || 0)) : 0,
+      value: cheque?.address === AddressZero ? BigNumber.from(spendAmount).sub(BigNumber.from(chequesData || 0)) : 0,
+      gasLimit: BigNumber.from(200_000),
     },
   })
   const {data: actionData, write: actionWrite, status: actionStatus} = useContractWrite(actionConfig)
@@ -197,7 +198,7 @@ const Baccarat = () => {
     functionName: 'settle',
     args: [randomNumber],
     overrides: {
-      gasLimit: BigNumber.from(2_000_000),
+      gasLimit: BigNumber.from(200_000),
     }
   })
   const {data: settleData, write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
@@ -382,7 +383,7 @@ const Baccarat = () => {
                   if (balance) {
                     return item.value <= balance
                   }
-                  return true
+                  return false
                 }).map((item, index) => (
                   <ChakraBox
                     key={index}
