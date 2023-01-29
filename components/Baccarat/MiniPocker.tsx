@@ -6,6 +6,8 @@ import {isValidMotionProp, motion} from "framer-motion";
 type MiniPockerProps = {
   id: BigNumber,
   hidden?: boolean,
+  height?: string,
+  width?: string,
 }
 
 const ChakraBox = chakra(motion.div, {
@@ -13,7 +15,7 @@ const ChakraBox = chakra(motion.div, {
 })
 
 const MiniPocker: FC<MiniPockerProps> = (props) => {
-  const {id, hidden} = props
+  const {id, hidden, height, width} = props
 
   const suitStr = useMemo(() => {
     const suit = BigNumber.from(id).mod(4).toNumber()
@@ -46,7 +48,7 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
   }, [id])
 
   if (BigNumber.from(id).eq(0)) return (
-    <Stack w={'29px'} h={'44px'} border={'1px solid gray'} borderRadius={'4px'} bg={hidden ? 'blue.500' : 'white'}
+    <Stack w={width ? width : '29px'} h={height ? height : '44px'} border={'1px solid gray'} borderRadius={'4px'} bg={hidden ? 'blue.500' : 'white'}
            cursor={'pointer'} zIndex={"base"} boxShadow={'sm'} p={'2px'} userSelect={'none'}>
     </Stack>
   )
@@ -56,7 +58,7 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
       whileHover={{scale: 1.2, transition: {duration: 0.2}}}
       whileTap={{scale: 0.9}}
     >
-      <Stack w={'29px'} h={'44px'} border={'1px solid white'} borderRadius={'4px'} bg={hidden ? 'blue.500' : 'white'}
+      <Stack w={width ? width : '29px'} h={height ? height : '44px'} border={'1px solid white'} borderRadius={'4px'} bg={hidden ? 'blue.500' : 'white'}
              cursor={'pointer'} bgImage={'url(/icon.svg)'} zIndex={"base"}
              spacing={0} boxShadow={'sm'} p={'2px'} justify={hidden ? 'center' : "space-between"} userSelect={'none'}>
         {

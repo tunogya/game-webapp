@@ -504,77 +504,32 @@ const Baccarat = () => {
 
   const getLastHands = () => {
     return (
-      <HStack>
-        {
-          [
-            {
-              rank: 'A',
-              suit: '♠',
-            },
-            {
-              rank: 'J',
-              suit: '♦',
-            },
-            {
-              rank: 'Q',
-              suit: '♥',
-            }
-          ].map((item, index) => (
-            <ChakraBox
-              key={index}
-              whileHover={{scale: 1.2, transition: {duration: 0.2}}}
-              whileTap={{scale: 0.9}}
-              whileDrag={{scale: 1.2}}
-            >
-              <Stack w={'57px'} h={'88px'} border={'1px solid white'} borderRadius={'6px'} p={1} justify={"center"}
-                     cursor={'pointer'} bg={'blue.500'} boxShadow={'md'} userSelect={"none"}>
-                {/*<Text fontSize={'xs'} fontWeight={'bold'}*/}
-                {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>*/}
-                {/*<Text fontSize={'xl'} textAlign={"center"}*/}
-                {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>*/}
-                {/*<Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'}*/}
-                {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>*/}
-              </Stack>
-            </ChakraBox>
-          ))
-        }
+      <HStack spacing={4}>
+        <HStack>
+          {
+            [
+              results[results.length - 1].bankerHands1 || 0,
+              results[results.length - 1].bankerHands2 || 0,
+              results[results.length - 1].bankerHands3 || 0,
+            ].map((item, index) => (
+              <MiniPocker id={item} key={index} width={'57px'} height={'88px'}/>
+            ))
+          }
+        </HStack>
         <Text color={'red.200'} fontWeight={'bold'}>B</Text>
         <Stack w={'1px'} h={'100px'} bg={'white'}></Stack>
         <Text color={'blue.200'} fontWeight={'bold'}>P</Text>
-        {
-          [
-            {
-              rank: 'A',
-              suit: '♠',
-            },
-            {
-              rank: 'J',
-              suit: '♦',
-            },
-            {
-              rank: 'Q',
-              suit: '♥',
-            }
-          ].map((item, index) => (
-            <ChakraBox
-              key={index}
-              whileHover={{scale: 1.2, transition: {duration: 0.2}}}
-              whileTap={{scale: 0.9}}
-              whileDrag={{scale: 1.2}}
-            >
-              <Stack w={'57px'} h={'88px'} border={'1px solid white'} borderRadius={'6px'} p={1}
-                     justify={"center"} cursor={'pointer'}
-                     bg={'blue.500'} boxShadow={'md'} userSelect={"none"}>
-                {/*<Text fontSize={'xs'} fontWeight={'bold'}*/}
-                {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>*/}
-                {/*<Text fontSize={'xl'} textAlign={"center"}*/}
-                {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.suit}</Text>*/}
-                {/*<Text fontSize={'xs'} fontWeight={'bold'} transform={'rotate(180deg)'}*/}
-                {/*      color={item.suit === '♦' || item.suit === '♥' ? 'red' : 'black'}>{item.rank}</Text>*/}
-              </Stack>
-            </ChakraBox>
-          ))
-        }
+        <HStack>
+          {
+            [
+              results[results.length - 1].playerHands1 || 0,
+              results[results.length - 1].playerHands2 || 0,
+              results[results.length - 1].playerHands3 || 0,
+            ].map((item, index) => (
+              <MiniPocker id={item} key={index} width={'57px'} height={'88px'}/>
+            ))
+          }
+        </HStack>
       </HStack>
     )
   }
