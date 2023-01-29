@@ -11,7 +11,7 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import {useState} from "react";
-import {isAddress} from "ethers/lib/utils";
+import {getAddress, isAddress} from "ethers/lib/utils";
 import {useNetwork, useToken} from "wagmi";
 import {useRecoilState} from "recoil";
 import {baccaratChequeAtom} from "../../state";
@@ -53,19 +53,19 @@ const PickTokenModal = () => {
             <HStack justify={"space-between"} w={'full'}>
               <Button variant={'ghost'} onClick={() => {
                 setCheque({
-                  chainId: chain?.id,
+                  chainId: chain?.id || 0,
                   address: AddressZero,
-                  decimals: chain?.nativeCurrency.decimals,
-                  name: chain?.nativeCurrency.name,
-                  symbol: chain?.nativeCurrency.symbol,
+                  decimals: chain?.nativeCurrency.decimals || 18,
+                  name: chain?.nativeCurrency.name || '',
+                  symbol: chain?.nativeCurrency.symbol || '',
                 })
                 onClose()
               }}>Pick Native Currency</Button>
               <Button disabled={!isAddress(token) || !tokenData} onClick={() => {
                 if (tokenData) {
                   setCheque({
-                    chainId: chain?.id,
-                    address: token,
+                    chainId: chain?.id || 0,
+                    address: getAddress(token),
                     symbol: tokenData.symbol,
                     name: tokenData.name,
                     decimals: tokenData.decimals,
