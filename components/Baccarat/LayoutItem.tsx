@@ -1,7 +1,8 @@
 import {Td, Tr} from "@chakra-ui/react";
 import {BigNumber} from "ethers";
 import {Address, useNetwork, useToken} from "wagmi";
-import {FC, useMemo} from "react";
+import {FC, useMemo, useState} from "react";
+import {AddressZero} from "@ethersproject/constants";
 
 type LayoutItemProps = {
   index: number;
@@ -34,23 +35,28 @@ const LayoutItem: FC<LayoutItemProps> = (props) => {
   }, [betType])
   const { data: tokenData } = useToken({
     chainId: chain?.id,
-    address: token,
+    address: token === AddressZero ? undefined : token,
   })
+  const [symbol, setSymbol] = useState('')
+
   const amountString = useMemo(() => {
+    if (token === AddressZero) {
+      setSymbol(chain?.nativeCurrency.symbol || '')
+      return BigNumber.from(amount).div(BigNumber.from(10).pow(18)).toString()
+    }
     if (tokenData) {
+      setSymbol(tokenData.symbol)
       return BigNumber.from(amount).div(BigNumber.from(10).pow(tokenData?.decimals || 0)).toString()
     }
-    return '-'
-  }, [amount, tokenData])
+    return ''
+  }, [amount, chain?.nativeCurrency.symbol, token, tokenData])
 
   return (
     <Tr>
       <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>{index}</Td>
       <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>{player.slice(0, 6)}...{player.slice(-4)}</Td>
       <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>{betTypeString}</Td>
-      <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>{Number(amountString).toLocaleString('en-US', {
-        maximumFractionDigits: 2,
-      })} {tokenData?.symbol}</Td>
+      <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>{Number(amountString).toLocaleString()} {symbol}</Td>
     </Tr>
   )
 }

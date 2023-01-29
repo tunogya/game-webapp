@@ -198,7 +198,7 @@ const Baccarat = () => {
     functionName: 'settle',
     args: [randomNumber],
     overrides: {
-      gasLimit: BigNumber.from(200_000),
+      gasLimit: BigNumber.from(1_000_000),
     }
   })
   const {data: settleData, write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
