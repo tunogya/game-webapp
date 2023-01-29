@@ -45,6 +45,8 @@ const MiniPocker: FC<MiniPockerProps> = (props) => {
     }
   }, [id])
 
+  if (BigNumber.from(id).eq(0)) return (<></>)
+
   return (
     <ChakraBox
       whileHover={{scale: 1.2, transition: {duration: 0.2}}}
