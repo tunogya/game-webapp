@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import HistoryBall, {ResultType} from "../../components/Baccarat/HistoryBall";
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratBetType} from "../../components/Baccarat/Cheque";
 import PickTokenModal from "../../components/Baccarat/PickTokenModal";
@@ -65,11 +65,6 @@ const Baccarat = () => {
     address: BACCARAT_ADDRESS[chain?.id || 5],
     abi: BACCARAT_ABI
   }
-  const {data: cursorData} = useContractRead({
-    ...baccaratContract,
-    functionName: 'cursor',
-    watch: true,
-  })
   const {data: chequesData} = useContractRead({
     ...baccaratContract,
     functionName: 'chequesOf',
@@ -79,11 +74,6 @@ const Baccarat = () => {
   const {data: layoutData} = useContractRead({
     ...baccaratContract,
     functionName: 'layout',
-    watch: true,
-  })
-  const {data: cardsData} = useContractRead({
-    ...baccaratContract,
-    functionName: 'shoe',
     watch: true,
   })
   const {data: resultsData} = useContractRead({
@@ -107,19 +97,6 @@ const Baccarat = () => {
       setCheque(chequeTokenData)
     }
   }, [chequeTokenData])
-
-  const refreshCards = useCallback(() => {
-    if (cardsData && cursorData) {
-      // @ts-ignore
-      setCards(cardsData.filter((item, index) => {
-        return BigNumber.from(cursorData).lte(index)
-      }))
-    }
-  }, [cardsData, cursorData])
-
-  useEffect(() => {
-    refreshCards()
-  }, [refreshCards])
 
   useEffect(() => {
     if (layoutData) {
