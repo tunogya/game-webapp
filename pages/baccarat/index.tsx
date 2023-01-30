@@ -1,7 +1,7 @@
 import {
   Button,
   chakra,
-  HStack, IconButton,
+  HStack,
   shouldForwardProp, Spacer,
   Stack,
   Table,
@@ -23,7 +23,7 @@ import {
   useAccount,
   useBalance,
   useContractRead,
-  useContractWrite, useFeeData,
+  useContractWrite,
   useNetwork,
   usePrepareContractWrite, useWaitForTransaction
 } from "wagmi";
@@ -34,7 +34,6 @@ import {BigNumber, ethers} from "ethers";
 import {BACCARAT_ABI} from "../../constant/abi";
 import LayoutItem from "../../components/Baccarat/LayoutItem";
 import MiniPocker from "../../components/Baccarat/MiniPocker";
-import {ViewIcon, ViewOffIcon} from "@chakra-ui/icons";
 
 const ChakraBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
@@ -92,15 +91,8 @@ const Baccarat = () => {
     functionName: 'results',
     watch: true,
   })
-  const [showCard, setShowCard] = useState(true)
-  const [cards, setCards] = useState([])
   const [layout, setLayout] = useState([])
   const [canSettle, setCanSettle] = useState(false)
-  const {data: feeData} = useFeeData({
-    chainId: chain?.id,
-    formatUnits: 'gwei',
-    watch: true,
-  })
   const [results, setResults] = useState<ResultType[]>([])
 
   useEffect(() => {
@@ -178,25 +170,13 @@ const Baccarat = () => {
     },
   })
   const {data: actionData, write: actionWrite, status: actionStatus} = useContractWrite(actionConfig)
-  const { status: actionStatus2 } = useWaitForTransaction({
+  const {status: actionStatus2} = useWaitForTransaction({
     hash: actionData?.hash,
   })
   const randomNumber = useMemo(() => {
     const randomBytes = ethers.utils.randomBytes(32)
     return BigNumber.from(randomBytes)
   }, [])
-  const {config: shuffleConfig} = usePrepareContractWrite({
-    ...baccaratContract,
-    functionName: 'shuffle',
-    args: [randomNumber],
-    overrides: {
-      gasLimit: BigNumber.from(1_200_000),
-    }
-  })
-  const {data: shuffleData, write: shuffleWrite, status: shuffleStatus} = useContractWrite(shuffleConfig)
-  const {status: shuffleStatus2 } = useWaitForTransaction({
-    hash: shuffleData?.hash,
-  })
   const {config: settleConfig} = usePrepareContractWrite({
     ...baccaratContract,
     functionName: 'settle',
@@ -206,14 +186,9 @@ const Baccarat = () => {
     }
   })
   const {data: settleData, write: settleWrite, status: settleStatus} = useContractWrite(settleConfig)
-  const {status: settleStatus2 } = useWaitForTransaction({
+  const {status: settleStatus2} = useWaitForTransaction({
     hash: settleData?.hash,
   })
-  const [fee, setFee] = useState<{
-    gasPrice: string | null,
-    maxFeePerGas: string | null,
-    maxPriorityFeePerGas: string | null
-  } | null>(null)
   const [contractLink, setContractLink] = useState('')
 
   useEffect(() => {
@@ -222,16 +197,6 @@ const Baccarat = () => {
       setValue(0)
     }
   }, [actionStatus2])
-
-  useEffect(() => {
-    if (feeData) {
-      setFee({
-        gasPrice: Number(feeData?.formatted.gasPrice).toLocaleString(),
-        maxFeePerGas: Number(feeData?.formatted.maxFeePerGas).toLocaleString(),
-        maxPriorityFeePerGas: Number(feeData?.formatted.maxPriorityFeePerGas).toLocaleString(),
-      })
-    }
-  }, [feeData])
 
   useEffect(() => {
     if (chain) {
@@ -286,95 +251,83 @@ const Baccarat = () => {
     }
   }
 
-  const getShoe = () => {
-    return (
-      <Stack h={'full'} minW={'400px'} w={'400px'} border={'2px solid white'} p={2} justify={"space-between"}>
-        <HStack>
-          <Text color={'blue.200'} fontWeight={'bold'}>Shoe</Text>
-          <Spacer/>
-          <Button variant={"solid"} colorScheme={'blue'} onClick={() => shuffleWrite?.()}
-                  isLoading={shuffleStatus === 'loading' || shuffleStatus2 === 'loading'} loadingText={'Pending...'}
-          >Shuffle</Button>
-        </HStack>
-        <Wrap justify={'center'} overflow={'scroll'} maxH={'520px'} py={1}>
-          {
-            // @ts-ignore
-            cards.length > 0 && cards.map((item: BigNumber, index: number) => (
-              <WrapItem key={index}>
-                <MiniPocker id={item} hidden={!showCard}/>
-              </WrapItem>
-            ))
-          }
-        </Wrap>
-        {/*@ts-ignore*/}
-        <HStack>
-          <Text color={'blue.200'} fontWeight={'semibold'} fontSize={'sm'}>
-            {/*@ts-ignore*/}
-            Left: {cards?.length || 0} Cards
-          </Text>
-          <Spacer/>
-          <IconButton aria-label={'refresh'} variant={'ghost'} color={'blue.200'}
-                      borderRadius={'full'} size={'sm'}
-                      onClick={() => {
-                        setShowCard(!showCard)
-                      }}
-                      icon={showCard ? <ViewOffIcon/> : <ViewIcon/>}/>
-        </HStack>
-      </Stack>
-    )
-  }
-
   const getLayout = () => {
     return (
-      <Stack h={'full'} border={'2px solid white'} spacing={0}>
+      <Stack w={'full'} h={'full'} border={'2px solid white'} spacing={0}>
         <HStack borderBottom={'1px solid white'} h={'80px'} spacing={0}>
-          <Stack w={'280px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
+          <Stack w={'70%'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                  cursor={'pointer'} userSelect={'none'} spacing={0} onClick={() => deal(BaccaratBetType.Tie)}>
-            <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>T</Text>
-            <Text color={'blue.200'} fontSize={'sm'}>1:8</Text>
-            <Cheque value={value} hidden={betType !== BaccaratBetType.Tie} width={'280px'} height={'80px'}
-                    odds={9}/>
+            {betType === BaccaratBetType.Tie ? (
+              <Cheque value={value} odds={9}/>
+            ) : (
+              <>
+                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>T</Text>
+                <Text color={'blue.200'} fontSize={'sm'}>1:8</Text>
+              </>
+            )}
           </Stack>
-          <Stack w={'120px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
+          <Stack w={'30%'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.SuperSix)}>
-            <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>6</Text>
-            <Text color={'blue.200'} fontSize={'sm'}>1:12</Text>
-            <Cheque value={value} hidden={betType !== BaccaratBetType.SuperSix} width={'120px'} height={'80px'}
-                    odds={13}/>
+            {betType === BaccaratBetType.SuperSix ? (
+              <Cheque value={value} odds={13}/>
+            ) : (
+              <>
+                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>6</Text>
+                <Text color={'blue.200'} fontSize={'sm'}>1:12</Text>
+              </>
+            )}
           </Stack>
         </HStack>
         <HStack borderBottom={'1px solid white'} h={'160px'} spacing={0}>
-          <Stack w={'280px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
+          <Stack w={'70%'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.Banker)}
                  spacing={0}>
-            <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'}>B</Text>
-            <Text color={'red.200'} fontSize={'sm'}>1:0.95</Text>
-            <Cheque value={value} hidden={betType !== BaccaratBetType.Banker} width={'280px'} height={'160px'}
-                    odds={1.95}/>
+            {
+              betType === BaccaratBetType.Banker ? (
+                <Cheque value={value} odds={1.95}/>
+              ) : (
+                <>
+                  <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'}>B</Text>
+                  <Text color={'red.200'} fontSize={'sm'}>1:0.95</Text>
+                </>
+              )
+            }
           </Stack>
-          <Stack w={'120px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
+          <Stack w={'30%'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.BankerPair)}>
-            <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>B PAIR</Text>
-            <Text color={'red.200'} fontSize={'sm'}>1:11</Text>
-            <Cheque value={value} hidden={betType !== BaccaratBetType.BankerPair} width={'120px'} height={'160px'}
-                    odds={12}/>
+            {betType === BaccaratBetType.BankerPair ? (
+              <Cheque value={value} odds={12}/>
+            ) : (
+              <>
+                <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>B PAIR</Text>
+                <Text color={'red.200'} fontSize={'sm'}>1:11</Text>
+              </>
+            )}
           </Stack>
         </HStack>
         <HStack h={'160px'} borderBottom={'1px solid white'} spacing={0}>
-          <Stack w={'280px'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
+          <Stack w={'70%'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.Player)}
                  spacing={0}>
-            <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>P</Text>
-            <Text color={'blue.200'} fontSize={'sm'}>1:1</Text>
-            <Cheque value={value} hidden={betType !== BaccaratBetType.Player} width={'280px'} height={'160px'}
-                    odds={2}/>
+            {betType === BaccaratBetType.Player ? (
+              <Cheque value={value} odds={2}/>
+            ) : (
+              <>
+                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>P</Text>
+                <Text color={'blue.200'} fontSize={'sm'}>1:1</Text>
+              </>
+            )}
           </Stack>
-          <Stack w={'120px'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
+          <Stack w={'30%'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.PlayerPair)}>
-            <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>P PAIR</Text>
-            <Text color={'blue.200'} fontSize={'sm'}>1:11</Text>
-            <Cheque value={value} hidden={betType !== BaccaratBetType.PlayerPair} width={'120px'} height={'160px'}
-                    odds={12}/>
+            {betType === BaccaratBetType.PlayerPair ? (
+              <Cheque value={value} odds={12}/>
+            ) : (
+              <>
+                <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>P PAIR</Text>
+                <Text color={'blue.200'} fontSize={'sm'}>1:11</Text>
+              </>
+            )}
           </Stack>
         </HStack>
         <Stack px={2} h={'240px'} alignItems={"center"} p={2}>
@@ -427,7 +380,8 @@ const Baccarat = () => {
                 )).slice(-5)
               }
             </HStack>
-            <Tooltip label={`balance: ${balanceAndCheques.balance.toLocaleString()} ${cheque && cheque.symbol}, cheques: ${balanceAndCheques.cheques.toLocaleString()} ${cheque && cheque.symbol}`}>
+            <Tooltip
+              label={`balance: ${balanceAndCheques.balance.toLocaleString()} ${cheque && cheque.symbol}, cheques: ${balanceAndCheques.cheques.toLocaleString()} ${cheque && cheque.symbol}`}>
               <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'} cursor={'pointer'}>
                 {balanceAndCheques.total.toLocaleString()} {value > 0 && `- ${value.toLocaleString()}`}
                 {cheque && cheque.symbol}
@@ -441,7 +395,8 @@ const Baccarat = () => {
                                   spendAmount={spendAmount}/>
             )}
             {value > 0 && (
-              <Button variant={"solid"} colorScheme={'blue'} isLoading={actionStatus === 'loading' || actionStatus2 === 'loading'}
+              <Button variant={"solid"} colorScheme={'blue'}
+                      isLoading={actionStatus === 'loading' || actionStatus2 === 'loading'}
                       loadingText={'Pending...'}
                       onClick={() => actionWrite?.()}>
                 Action
@@ -464,7 +419,7 @@ const Baccarat = () => {
 
   const getActions = () => {
     return (
-      <Stack h={'40%'} w={'400px'} border={'2px solid white'} overflow={'scroll'}>
+      <Stack w={'full'} border={'2px solid white'} overflow={'scroll'}>
         {
           layout?.length > 0 ? (
             <Table variant='striped' colorScheme='blackAlpha'>
@@ -492,20 +447,17 @@ const Baccarat = () => {
 
   const getHistory = () => {
     return (
-      <Stack h={'60%'} w={'400px'} border={'2px solid white'} p={2}>
-        <Text color={'blue.200'} fontWeight={'bold'}>History</Text>
-        <Wrap>
-          {
-            results.length > 0 ? results.map((item, index) => (
-              <WrapItem key={index}>
-                <HistoryBall index={index} result={item}/>
-              </WrapItem>
-            )).reverse() : (
-              <Text color={'blue.200'} fontWeight={'bold'}>No history.</Text>
-            )
-          }
-        </Wrap>
-      </Stack>
+      <Wrap w={'full'} border={'2px solid white'} p={2}>
+        {
+          results.length > 0 ? results.map((item, index) => (
+            <WrapItem key={index}>
+              <HistoryBall index={index} result={item}/>
+            </WrapItem>
+          )).reverse() : (
+            <Text color={'blue.200'} fontWeight={'bold'}>No history.</Text>
+          )
+        }
+      </Wrap>
     )
   }
 
@@ -519,12 +471,12 @@ const Baccarat = () => {
               results[results.length - 1]?.bankerHands2 || 0,
               results[results.length - 1]?.bankerHands3 || 0,
             ].map((item, index) => (
-              <MiniPocker id={item} key={index} width={'57px'} height={'88px'}/>
+              <MiniPocker id={item} key={index}/>
             ))
           }
         </HStack>
         <Text color={'red.200'} fontWeight={'bold'}>B</Text>
-        <Stack w={'1px'} h={'100px'} bg={'white'}></Stack>
+        <Stack w={'1px'} h={'40px'} bg={'white'}></Stack>
         <Text color={'blue.200'} fontWeight={'bold'}>P</Text>
         <HStack>
           {
@@ -533,7 +485,7 @@ const Baccarat = () => {
               results[results.length - 1]?.playerHands2 || 0,
               results[results.length - 1]?.playerHands3 || 0,
             ].map((item, index) => (
-              <MiniPocker id={item} key={index} width={'57px'} height={'88px'}/>
+              <MiniPocker id={item} key={index}/>
             ))
           }
         </HStack>
@@ -541,40 +493,37 @@ const Baccarat = () => {
     )
   }
 
+  const suttleButton = () => {
+    return (
+      <Button variant={"solid"} w={'120px'} colorScheme={'blue'}
+              isLoading={settleStatus === 'loading' || settleStatus2 === 'loading'}
+              loadingText={'Pending...'} disabled={!canSettle}
+              onClick={() => settleWrite?.()}>
+        Settle
+      </Button>
+    )
+  }
+
   // @ts-ignore
   return (
-    <Stack h={'100vh'} w={'full'} spacing={0} overflow={'auto'} bg={"blue.600"} align={"center"}>
+    <Stack w={'full'} spacing={0} overflow={'scroll'} bg={"blue.600"} align={"center"}>
       <TheHeader/>
-      <Stack p={'20px'} maxW={'container.xl'} spacing={'20px'} justify={"center"}>
-        <HStack justify={"space-around"}>
-          <Text w={'120px'} color={'white'} fontWeight={'bold'}>
+      <Stack p={[2, 4, 6, 8]} w={['full', 'container.sm']} spacing={[4,6,8]} justify={"center"} align={"center"}>
+        <HStack spacing={'100px'} w={'full'} justify={['space-between', 'center']}>
+          <Text color={'white'} fontWeight={'bold'} fontSize={['md', 'xl', '2xl']}>
             Baccarat
           </Text>
-          {getLastHands()}
-          <Button variant={"solid"} w={'120px'} colorScheme={'blue'} isLoading={settleStatus === 'loading' || settleStatus2 === 'loading'}
-                  loadingText={'Pending...'} disabled={!canSettle}
-                  onClick={() => settleWrite?.()}>
-            Settle
-          </Button>
+          {suttleButton()}
         </HStack>
-        <HStack justify={"center"} alignItems={"start"} spacing={'40px'}>
-          <Stack h={'full'}>
-            {getActions()}
-            {getHistory()}
-          </Stack>
-          {getLayout()}
-          {getShoe()}
-        </HStack>
-      </Stack>
-      <HStack maxW={'container.xl'} w={'full'} fontWeight={'semibold'} fontSize={'xs'} justify={"space-between"}>
-        <Text color={'blue.200'}>Contract: <Link isExternal textDecoration={'underline'}
-                                                 href={contractLink}>
+        {getLastHands()}
+        <Text color={'blue.200'} fontSize={'xs'}>Contract: <Link isExternal textDecoration={'underline'}
+                                                                 href={contractLink}>
           {BACCARAT_ADDRESS[chain?.id || 5]}
         </Link></Text>
-        <Text color={'blue.200'}>
-          Gas
-          Price: {fee?.gasPrice} gwei, {fee?.maxFeePerGas} gwei, {fee?.maxPriorityFeePerGas} gwei</Text>
-      </HStack>
+        {getLayout()}
+        {getActions()}
+        {getHistory()}
+      </Stack>
     </Stack>
   )
 }

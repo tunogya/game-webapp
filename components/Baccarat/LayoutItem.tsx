@@ -14,7 +14,7 @@ type LayoutItemProps = {
 
 const LayoutItem: FC<LayoutItemProps> = (props) => {
   const { chain } = useNetwork()
-  const {index, amount, betType, player, token} = props
+  const {amount, betType, player, token} = props
   const betTypeString = useMemo(() => {
     switch (betType.toNumber()) {
       case 0:
@@ -53,7 +53,6 @@ const LayoutItem: FC<LayoutItemProps> = (props) => {
 
   return (
     <Tr>
-      <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>{index}</Td>
       <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>{player.slice(0, 6)}...{player.slice(-4)}</Td>
       <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>{betTypeString}</Td>
       <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>{Number(amountString).toLocaleString()} {symbol}</Td>

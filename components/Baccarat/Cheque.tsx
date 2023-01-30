@@ -12,16 +12,13 @@ export enum BaccaratBetType {
 
 type ChequeProps = {
   value: number,
-  hidden?: boolean,
-  width?: string,
-  height?: string,
   odds: number,
 }
 
 const Cheque: FC<ChequeProps> = (props) => {
-  const { hidden, width, height, odds, value } = props
+  const { odds, value } = props
   return (
-    <HStack position={'absolute'} hidden={hidden} w={width || ''} h={height || ''} justify={"center"} spacing={0}>
+    <HStack h={'full'} w={'full'} justify={"center"} spacing={0}>
       <Stack w={'full'} h={'full'} border={'2px dashed white'} bg={"rgba(0,0,0,0.6)"} justify={"center"}
              userSelect={'none'} boxShadow={'md'} alignItems={"center"} cursor={'pointer'}>
         <Text fontWeight={'bold'} color={'white'} fontSize={'3xl'}>+{value.toLocaleString('en-US', {
