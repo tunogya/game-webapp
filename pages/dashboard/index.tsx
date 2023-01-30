@@ -12,7 +12,7 @@ const Dashboard = () => {
   return (
     <Stack w={'full'} spacing={0}>
       <TheHeader/>
-      <Stack px={40} py={10} spacing={10}>
+      <Stack px={[2, 4, 8, 16, 32]} py={[2, 4, 8]} spacing={10}>
         <Stack w={'50%'} h={'400px'} bg={'blue.200'} p={'20px'} borderRadius={'20px'} justify={"center"} alignItems={"center"}>
           <Link href={'/baccarat'}>
             <Heading>
