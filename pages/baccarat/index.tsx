@@ -102,20 +102,8 @@ const Baccarat = () => {
     if (layoutData) {
       // @ts-ignore
       setLayout(layoutData)
-      let banker = false;
-      let player = false;
       // @ts-ignore
-      for (let i = 0; i < layoutData.length; i++) {
-        // @ts-ignore
-        const item = layoutData[i]
-        if (item.betType.eq(0)) {
-          banker = true
-        }
-        if (item.betType.eq(1)) {
-          player = true
-        }
-        setCanSettle(banker && player)
-      }
+      setCanSettle(layoutData.length >= 2)
     }
   }, [layoutData])
 
