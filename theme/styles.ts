@@ -5,8 +5,15 @@ const styles = {
       bg: 'gray.50',
       color: 'gray.800',
     },
-    '::-webkit-scrollbar': {
-      display: 'none',
+    '*': {
+      '-webkit-overflow-scrolling': 'touch',
+      '-ms-overflow-style': 'none'
+    },
+    'div,a,img': {
+      '-webkit-tap-highlight-color': 'transparent',
+      '-webkit-touch-callout': 'none',
+      '-webkit-user-select': 'none',
+      'user-select': 'none',
     },
   }
 
