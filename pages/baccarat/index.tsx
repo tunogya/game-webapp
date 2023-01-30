@@ -493,7 +493,7 @@ const Baccarat = () => {
                 <HistoryBall index={index} result={item}/>
               </WrapItem>
             )).reverse() : (
-              <Text color={'blue.200'} fontWeight={'bold'} p={2}>No history.</Text>
+              <Text color={'blue.200'} fontWeight={'bold'}>No history.</Text>
             )
           }
         </Wrap>
