@@ -1,5 +1,5 @@
 import {
-  Divider, HStack, Popover, PopoverArrow,
+  Divider, HStack, Popover,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
@@ -51,7 +51,7 @@ const HistoryBall: FC<HistoryBallProps> = (props) => {
     <Popover trigger={'hover'} openDelay={0} closeDelay={0}>
       <PopoverTrigger>
         <Stack w={'40px'} h={'40px'} bg={player ? 'white' : (banker ? 'red.200' : '')}
-               border={banker ? '' : '2px solid white'} cursor={'pointer'}
+               border={banker ? '' : '2px solid white'} cursor={'pointer'} _hover={{ border: '2px solid white' }}
                borderRadius={'full'} alignItems={"center"} justify={"center"}>
           <Text color={player ? 'black' : 'white'} fontWeight={'bold'}
                 textDecoration={(bPair || pPair) ? 'underline' : ''}>
@@ -61,14 +61,13 @@ const HistoryBall: FC<HistoryBallProps> = (props) => {
           </Text>
         </Stack>
       </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
+      <PopoverContent bg={'blue.600'} borderRadius={'0'} borderWidth={'2px'} borderColor={'white'}>
         <PopoverBody>
           <Stack>
-            <Text fontSize={'xx-small'}>No: {BigNumber.from(cursor).toString()}</Text>
+            <Text fontSize={'xx-small'} color={'blue.200'} fontWeight={'semibold'}>No: {BigNumber.from(cursor).toString()}</Text>
             <HStack justifyContent={'space-between'}>
-              <Text fontSize={'sm'} fontWeight={'bold'}>Banker: {BigNumber.from(bankerPoints).toString()}</Text>
-              <Text fontSize={'sm'} fontWeight={'bold'}>Player: {BigNumber.from(playerPoints).toString()}</Text>
+              <Text fontSize={'sm'} fontWeight={'bold'} color={'blue.200'}>Banker: {BigNumber.from(bankerPoints).toString()}</Text>
+              <Text fontSize={'sm'} fontWeight={'bold'} color={'blue.200'}>Player: {BigNumber.from(playerPoints).toString()}</Text>
             </HStack>
             <HStack justify={'space-between'}>
               <HStack p={2}>
