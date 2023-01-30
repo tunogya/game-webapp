@@ -8,7 +8,7 @@ import {
   Tbody,
   Text,
   Wrap,
-  WrapItem, Link
+  WrapItem, Link, Tooltip
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import HistoryBall, {ResultType} from "../../components/Baccarat/HistoryBall";
@@ -53,7 +53,11 @@ const Baccarat = () => {
     token: cheque?.address === AddressZero ? undefined : cheque?.address,
     watch: true,
   });
-  const [balance, setBalance] = useState(0);
+  const [balanceAndCheques, setBalanceAndCheques] = useState({
+    balance: 0,
+    cheques: 0,
+    total: 0
+  });
   const chequeTokenData = useRecoilValue(baccaratChequeAtom);
   const spendAmount = useMemo(() => {
     return BigNumber.from(value).mul(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toString()
@@ -237,9 +241,11 @@ const Baccarat = () => {
 
   useEffect(() => {
     if (balanceData && chequesData) {
-      const balance = BigNumber.from(balanceData.value).add(BigNumber.from(chequesData))
-      const formatted = balance.div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber()
-      setBalance(formatted)
+      setBalanceAndCheques({
+        balance: BigNumber.from(balanceData.value).div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber(),
+        cheques: BigNumber.from(chequesData).div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber(),
+        total: BigNumber.from(balanceData.value).add(BigNumber.from(chequesData)).div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber()
+      })
     }
   }, [balanceData, cheque?.decimals, chequesData])
 
@@ -380,8 +386,8 @@ const Baccarat = () => {
             <HStack spacing={'20px'}>
               {
                 cheques.filter((item) => {
-                  if (balance) {
-                    return item.value <= balance
+                  if (balanceAndCheques) {
+                    return item.value <= balanceAndCheques.total
                   }
                   return false
                 }).map((item, index) => (
@@ -421,10 +427,12 @@ const Baccarat = () => {
                 )).slice(-5)
               }
             </HStack>
-            <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'}>
-              {balance.toLocaleString()} {value > 0 && `- ${value.toLocaleString()}`}
-              {cheque && cheque.symbol}
-            </Text>
+            <Tooltip label={`balance: ${balanceAndCheques.balance.toLocaleString()} ${cheque && cheque.symbol}, cheques: ${balanceAndCheques.cheques.toLocaleString()} ${cheque && cheque.symbol}`}>
+              <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'} cursor={'pointer'}>
+                {balanceAndCheques.total.toLocaleString()} {value > 0 && `- ${value.toLocaleString()}`}
+                {cheque && cheque.symbol}
+              </Text>
+            </Tooltip>
           </Stack>
           <Spacer/>
           <HStack>
