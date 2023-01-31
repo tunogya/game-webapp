@@ -514,6 +514,7 @@ const Baccarat = () => {
         {getLayout()}
         {getActions()}
         {getHistory()}
+        <Stack h={4}/>
       </Stack>
     </Stack>
   )
