@@ -17,6 +17,7 @@ import {
   walletConnectWallet
 } from "@rainbow-me/rainbowkit/wallets";
 import {RecoilRoot} from "recoil";
+import Head from "next/head";
 
 const {chains, provider} = configureChains(
   [mainnet, goerli],
@@ -68,6 +69,23 @@ export default function App({Component, pageProps}: AppProps) {
           <ChakraProvider theme={theme}>
             <Center>
               <Component {...pageProps} />
+              <Head>
+                <title>Wizarding Pay</title>
+                <meta
+                  name="description"
+                  content="Wizarding Pay"
+                />
+                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+                <meta content={'yes'} name={"apple-mobile-web-app-capable"} />
+                <meta content={'yes'} name={"mobile-web-app-capable"} />
+                <meta content={'black'} name={"apple-mobile-web-app-status-bar-style"} />
+                <meta content={'Wizarding Pay'} name={"apple-mobile-web-app-title"} />
+                <meta content={'telephone=no'} name={"format-detection"} />
+                <meta content={'email=no'} name={"format-detection"} />
+                <meta name="theme-color" content="#2B6CB0"/>
+                <link rel="icon" href="/favicon.svg"/>
+              </Head>
+
               <Script src={"https://telegram.org/js/games.js"}/>
               <Script id={"telegram-web-app"} src={"https://telegram.org/js/telegram-web-app.js"}/>
               <Script src={"https://www.googletagmanager.com/gtag/js?id=G-GY77H61X8Q"}></Script>
