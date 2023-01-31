@@ -21,7 +21,7 @@ export default function Home() {
     try {
       const res = await axios({
         method: 'get',
-        url: `https://api.wizardingpay.com/game/dune/userInfo?userId=${userId}`,
+        url: `/api/users/${userId}/address`,
       })
       if (res.data) {
         setState({

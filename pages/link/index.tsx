@@ -26,7 +26,7 @@ export default function Link() {
     try {
       const res = await axios({
         method: 'get',
-        url: `https://api.wizardingpay.com/tg/wallet?userId=${userId}`,
+        url: `/api/users/${userId}/address`,
       })
       if (res.data) {
         setWallet(res.data.wallet)
@@ -41,9 +41,13 @@ export default function Link() {
     try {
       const res = await axios({
         method: 'post',
-        url: `https://api.wizardingpay.com/tg/wallet?userId=${userId}`,
+        url: `/api/address`,
         headers: {
           "Authorization": `Bearer ${token}`,
+        },
+        data: {
+          id: userId,
+          address: address,
         }
       })
       if (res.data?.address?.toLowerCase() === address?.toLowerCase()) {
