@@ -3,7 +3,7 @@ import type {AppProps} from 'next/app'
 import {Center, ChakraProvider} from "@chakra-ui/react";
 import theme from "../theme";
 import Script from "next/script";
-import {configureChains, createClient, goerli, mainnet, WagmiConfig} from "wagmi";
+import {configureChains, createClient, goerli, WagmiConfig} from "wagmi";
 import {connectorsForWallets, RainbowKitProvider, lightTheme} from "@rainbow-me/rainbowkit";
 import {infuraProvider} from 'wagmi/providers/infura';
 import {
@@ -20,7 +20,7 @@ import {RecoilRoot} from "recoil";
 import Head from "next/head";
 
 const {chains, provider} = configureChains(
-  [mainnet, goerli],
+  [goerli],
   [
     infuraProvider({
       apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY!,

@@ -1,12 +1,13 @@
 import {atom} from "recoil";
 import {recoilPersist} from "recoil-persist";
 import {Address} from "wagmi";
+import {AddressZero} from "@ethersproject/constants";
 
 const { persistAtom } = recoilPersist()
 
 export const tokenAtom = atom({
   key: 'token',
-  default: '',
+  default: AddressZero,
   effects_UNSTABLE: [persistAtom],
 })
 

@@ -218,7 +218,7 @@ const Baccarat = () => {
 
   const getLayout = () => {
     return (
-      <Stack w={'full'} h={'full'} border={'2px solid white'} spacing={0}>
+      <Stack w={'full'} border={'2px solid white'} spacing={0}>
         <HStack borderBottom={'1px solid white'} h={'80px'} spacing={0}>
           <Stack w={'70%'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                  cursor={'pointer'} userSelect={'none'} spacing={0} onClick={() => deal(BaccaratBetType.Tie)}>
@@ -471,7 +471,7 @@ const Baccarat = () => {
 
   // @ts-ignore
   return (
-    <Stack w={'full'} spacing={0} overflow={'scroll'} bg={"blue.600"} align={"center"}>
+    <Stack w={'full'} minH={'100vh'} spacing={0} overflow={'scroll'} bg={"blue.600"} align={"center"}>
       <TheHeader/>
       <Stack p={[2, 4, 6, 8]} w={['full', 'container.sm']} spacing={[4,6,8]} justify={"center"} align={"center"}>
         <HStack spacing={'100px'} w={'full'} justify={['space-between', 'center']}>
