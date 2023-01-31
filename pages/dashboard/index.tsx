@@ -21,7 +21,7 @@ const Dashboard = () => {
           </Link>
         </Stack>
         <Divider/>
-        <Stack w={'400px'}>
+        <Stack>
           <Heading fontSize={'xl'}>Create a dune project</Heading>
           <Text fontSize={'sm'}>Make your ERC20 token as spice!</Text>
           <br/>
