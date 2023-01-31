@@ -179,22 +179,48 @@ const Baccarat = () => {
     }
   }, [balanceData, cheque?.decimals, chequesData])
 
+  const colors = ['#81E6D9', 'purple', 'orange', '#22543D', '#E53E3E']
+
   const cheques = [
     {
-      value: 1, color: '#81E6D9', label: '1'
+      value: 0.01, label: '0.01'
     },
     {
-      value: 10, color: 'purple', label: '10'
+      value: 0.1, label: '0.1'
     },
     {
-      value: 100, color: 'orange', label: '100'
+      value: 1, label: '1'
     },
     {
-      value: 1000, color: '#22543D', label: '1K'
+      value: 10, label: '10'
     },
     {
-      value: 10000, color: '#E53E3E', label: '1W'
+      value: 100, label: '100'
     },
+    {
+      value: 1000, label: '1K'
+    },
+    {
+      value: 10000, label: '1W'
+    },
+    {
+      value: 100000, label: '10W'
+    },
+    {
+      value: 1000000, label: '100W'
+    },
+    {
+      value: 10000000, label: '1M'
+    },
+    {
+      value: 100000000, label: '10M'
+    },
+    {
+      value: 1000000000, label: '100M'
+    },
+    {
+      value: 10000000000, label: '1B'
+    }
   ]
 
   const deal = (a: BaccaratBetType) => {
@@ -330,7 +356,7 @@ const Baccarat = () => {
                     display={"flex"}
                     justifyContent={"center"}
                     alignItems={"center"}
-                    border={`4px dashed ${item.color}`}
+                    border={`4px dashed ${colors[index % 5]}`}
                     borderRadius={'full'}
                     userSelect={'none'}
                     cursor={"pointer"}
@@ -340,7 +366,7 @@ const Baccarat = () => {
                     }}
                   >
                     <Text fontWeight={'bold'} textDecoration={pickedCheque === index ? 'underline' : ''}
-                          color={item.color}>{item.label}</Text>
+                          color={colors[index % 5]}>{item.label}</Text>
                   </ChakraBox>
                 )).slice(-5)
               }
