@@ -27,6 +27,7 @@ bot.start(async (ctx) => {
     
 Games:
 - /dune, Mint Spice on Arrakis dune!
+- /baccarat, Play baccarat with your crypto currency!
 
 Wallet:
 - /link, Link your wallet
@@ -93,6 +94,17 @@ Wallet:
 bot.command("dune", (ctx) => {
   try {
     ctx.replyWithGame('dune', Markup.inlineKeyboard([
+      Markup.button.game("Play Solo"),
+      Markup.button.url("Github", "https://github.com/tunogya/wizardingpay-game-webapp")
+    ]))
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+bot.command("baccarat", (ctx) => {
+  try {
+    ctx.replyWithGame('baccarat', Markup.inlineKeyboard([
       Markup.button.game("Play Solo"),
       Markup.button.url("Github", "https://github.com/tunogya/wizardingpay-game-webapp")
     ]))
