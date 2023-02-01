@@ -42,20 +42,20 @@ const LayoutItem: FC<LayoutItemProps> = (props) => {
   const amountString = useMemo(() => {
     if (token === AddressZero) {
       setSymbol(chain?.nativeCurrency.symbol || '')
-      return BigNumber.from(amount).div(BigNumber.from(10).pow(18)).toString()
+      return BigNumber.from(amount).div(BigNumber.from(10).pow(12)).toNumber() / 1_000_000
     }
     if (tokenData) {
       setSymbol(tokenData.symbol)
-      return BigNumber.from(amount).div(BigNumber.from(10).pow(tokenData?.decimals || 0)).toString()
+      return BigNumber.from(amount).div(BigNumber.from(10).pow(tokenData?.decimals - 6 || 0)).toNumber() / 1_000_000
     }
-    return ''
+    return 0
   }, [amount, chain?.nativeCurrency.symbol, token, tokenData])
 
   return (
     <Tr>
       <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>{player.slice(0, 6)}...{player.slice(-4)}</Td>
       <Td fontSize={'xs'} color={'white'} fontWeight={'500'}>{betTypeString}</Td>
-      <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>{Number(amountString).toLocaleString()} {symbol}</Td>
+      <Td fontSize={'xs'} color={'white'} fontWeight={'500'} isNumeric>{amountString.toLocaleString()} {symbol}</Td>
     </Tr>
   )
 }
