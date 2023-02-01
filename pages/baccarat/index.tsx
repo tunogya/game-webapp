@@ -184,6 +184,12 @@ const Baccarat = () => {
     if (cheque) {
       const all = [
         {
+          label: '0.01', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals - 2)))
+        },
+        {
+          label: '0.1', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals - 1)))
+        },
+        {
           label: '1', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals)))
         },
         {
@@ -245,7 +251,7 @@ const Baccarat = () => {
 
   const formatValue = useMemo(() => {
     if (cheque) {
-      return BigNumber.from(value).div(BigNumber.from(10).pow(cheque.decimals)).toNumber()
+      return BigNumber.from(value).div(BigNumber.from(10).pow(cheque.decimals - 6)).toNumber() / 1_000_000
     }
     return 0
   }, [cheque, value])
