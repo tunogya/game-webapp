@@ -193,12 +193,6 @@ const Baccarat = () => {
 
   const cheques = [
     {
-      value: 0.01, label: '0.01'
-    },
-    {
-      value: 0.1, label: '0.1'
-    },
-    {
       value: 1, label: '1'
     },
     {
