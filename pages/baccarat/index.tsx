@@ -182,7 +182,7 @@ const Baccarat = () => {
 
   const cheques = useMemo(() => {
     if (cheque) {
-      return [
+      const all = [
         {
           label: '1', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals)))
         },
@@ -213,12 +213,13 @@ const Baccarat = () => {
         {
           label: '1B', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 9)))
         }
-      ].filter((item) => {
+      ]
+      return all.filter((item) => {
         if (BigNumber.from(balanceAndCheques).gt(0)) {
           return BigNumber.from(item.value).lte(BigNumber.from(balanceAndCheques))
         }
         return false
-      })
+      }).slice(-5)
     }
     return []
   }, [balanceAndCheques, cheque])
@@ -370,7 +371,7 @@ const Baccarat = () => {
                     <Text fontWeight={'bold'} textDecoration={pickedCheque === index ? 'underline' : ''}
                           color={colors[index % 5]}>{item.label}</Text>
                   </ChakraBox>
-                )).slice(-5)
+                ))
               }
             </HStack>
             <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'} cursor={'pointer'}>
