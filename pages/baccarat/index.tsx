@@ -202,28 +202,25 @@ const Baccarat = () => {
       value: 100, label: '100'
     },
     {
-      value: 1000, label: '1K'
+      value: 1_000, label: '1K'
     },
     {
-      value: 10000, label: '1W'
+      value: 10_000, label: '10K'
     },
     {
-      value: 100000, label: '10W'
+      value: 100_000, label: '100K'
     },
     {
-      value: 1000000, label: '100W'
+      value: 1_000_000, label: '1M'
     },
     {
-      value: 10000000, label: '1M'
+      value: 10_000_000, label: '10M'
     },
     {
-      value: 100000000, label: '10M'
+      value: 100_000_000, label: '100M'
     },
     {
-      value: 1000000000, label: '100M'
-    },
-    {
-      value: 10000000000, label: '1B'
+      value: 1_000_000_000, label: '1B'
     }
   ]
 
