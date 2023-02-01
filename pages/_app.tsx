@@ -3,9 +3,11 @@ import type {AppProps} from 'next/app'
 import {Center, ChakraProvider} from "@chakra-ui/react";
 import theme from "../theme";
 import Script from "next/script";
-import {configureChains, createClient, goerli, WagmiConfig} from "wagmi";
+import {Chain, configureChains, createClient, WagmiConfig} from "wagmi";
+import {goerli, bscTestnet} from "wagmi/chains";
 import {connectorsForWallets, RainbowKitProvider, lightTheme} from "@rainbow-me/rainbowkit";
 import {infuraProvider} from 'wagmi/providers/infura';
+import {jsonRpcProvider} from 'wagmi/providers/jsonRpc';
 import {
   argentWallet,
   braveWallet,
@@ -20,12 +22,23 @@ import {RecoilRoot} from "recoil";
 import Head from "next/head";
 
 const {chains, provider} = configureChains(
-  [goerli],
+  [goerli, bscTestnet],
   [
     infuraProvider({
       apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY!,
       priority: 1,
     }),
+    jsonRpcProvider({
+      rpc(chain: Chain): { http: string; webSocket?: string } | null {
+        if (chain.id === bscTestnet.id) {
+          return {
+            http: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+            webSocket: 'wss://data-seed-prebsc-1-s1.binance.org:8545',
+          };
+        }
+        return null;
+      },
+    })
   ]
 );
 
@@ -75,13 +88,14 @@ export default function App({Component, pageProps}: AppProps) {
                   name="description"
                   content="Wizarding Pay"
                 />
-                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-                <meta content={'yes'} name={"apple-mobile-web-app-capable"} />
-                <meta content={'yes'} name={"mobile-web-app-capable"} />
-                <meta content={'black'} name={"apple-mobile-web-app-status-bar-style"} />
-                <meta content={'Wizarding Pay'} name={"apple-mobile-web-app-title"} />
-                <meta content={'telephone=no'} name={"format-detection"} />
-                <meta content={'email=no'} name={"format-detection"} />
+                <meta name="viewport"
+                      content="width=device-width, initial-scale=1, shrink-to-fit=no,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+                <meta content={'yes'} name={"apple-mobile-web-app-capable"}/>
+                <meta content={'yes'} name={"mobile-web-app-capable"}/>
+                <meta content={'black'} name={"apple-mobile-web-app-status-bar-style"}/>
+                <meta content={'Wizarding Pay'} name={"apple-mobile-web-app-title"}/>
+                <meta content={'telephone=no'} name={"format-detection"}/>
+                <meta content={'email=no'} name={"format-detection"}/>
                 <meta name="theme-color" content="#2B6CB0"/>
                 <link rel="icon" href="/favicon.svg"/>
               </Head>

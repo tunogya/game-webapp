@@ -16,7 +16,7 @@ import {useEffect, useMemo, useState} from "react";
 import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratBetType} from "../../components/Baccarat/Cheque";
 import PickTokenModal from "../../components/Baccarat/PickTokenModal";
-import {useRecoilValue} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {baccaratChequeAtom, ChequeType} from "../../state";
 import {
   Address,
@@ -57,7 +57,7 @@ const Baccarat = () => {
     cheques: 0,
     total: 0
   });
-  const chequeTokenData = useRecoilValue(baccaratChequeAtom);
+  const [chequeTokenData] = useRecoilState(baccaratChequeAtom);
   const spendAmount = useMemo(() => {
     return BigNumber.from(value).mul(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toString()
   }, [cheque, value])
@@ -93,10 +93,20 @@ const Baccarat = () => {
   }, [resultsData])
 
   useEffect(() => {
-    if (chequeTokenData) {
-      setCheque(chequeTokenData)
+    if (chequeTokenData && chain) {
+      if (chequeTokenData.chainId === chain.id) {
+        setCheque(chequeTokenData)
+      } else {
+        setCheque({
+          chainId: chain.id,
+          address: AddressZero,
+          decimals: chain.nativeCurrency.decimals,
+          name: chain.nativeCurrency.name,
+          symbol: chain.nativeCurrency.symbol,
+        })
+      }
     }
-  }, [chequeTokenData])
+  }, [chequeTokenData, chain])
 
   useEffect(() => {
     if (layoutData) {
