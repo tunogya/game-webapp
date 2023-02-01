@@ -213,10 +213,15 @@ const Baccarat = () => {
         {
           label: '1B', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 9)))
         }
-      ]
+      ].filter((item) => {
+        if (BigNumber.from(balanceAndCheques).gt(0)) {
+          return BigNumber.from(item.value).lte(BigNumber.from(balanceAndCheques))
+        }
+        return false
+      })
     }
     return []
-  }, [cheque])
+  }, [balanceAndCheques, cheque])
 
   const deal = (a: BaccaratBetType) => {
     if (!balanceData) {
@@ -331,12 +336,7 @@ const Baccarat = () => {
           <Stack alignItems={"center"} justify={"center"} h={'full'}>
             <HStack spacing={'20px'}>
               {
-                cheques.filter((item) => {
-                  if (BigNumber.from(balanceAndCheques).gt(0)) {
-                    return BigNumber.from(item.value).lte(BigNumber.from(balanceAndCheques))
-                  }
-                  return false
-                }).map((item, index) => (
+                cheques.map((item, index) => (
                   <ChakraBox
                     key={index}
                     dragConstraints={{
