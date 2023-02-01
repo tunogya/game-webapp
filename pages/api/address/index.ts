@@ -28,7 +28,7 @@ export default async function handler(
           SK: `ETH#${address}`,
         }
       }));
-      res.status(200).json({message: 'success'});
+      res.status(200).json({message: 'success', address: address});
     } catch (e) {
       res.status(500).json({message: e});
     }

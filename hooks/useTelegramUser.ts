@@ -19,20 +19,14 @@ const useTelegramUser = (userId: string | string[] | undefined) => {
       return
     }
     try {
-      const res = await Promise.all([
-        axios({
+      const res = await axios({
           method: 'get',
-          url: `https://api.wizardingpay.com/tg/user?userId=${userId}`,
-        }),
-        axios({
-          method: 'get',
-          url: `https://api.wizardingpay.com/tg/user?userId=${userId}`,
+          url: `/api/users/${userId}`,
         })
-      ])
       setUser({
-        username: res[0].data.username,
-        first_name: res[0].data.first_name,
-        last_name: res[0].data.last_name,
+        username: res.data.username,
+        first_name: res.data.first_name,
+        last_name: res.data.last_name,
         avatar_url: `https://static.wizardingpay.com/avatar/${userId}.jpg`
       })
     } catch (e) {

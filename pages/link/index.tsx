@@ -5,8 +5,6 @@ import axios from "axios";
 import {useRouter} from "next/router";
 import useTelegramUser from "../../hooks/useTelegramUser";
 import {useCallback, useEffect, useState} from "react";
-import {tokenAtom} from "../../state";
-import {useRecoilValue} from "recoil";
 
 // telegram webapp
 export default function Link() {
@@ -16,7 +14,6 @@ export default function Link() {
   const {user} = useTelegramUser(userId);
   const toast = useToast()
   const [wallet, setWallet] = useState<string[]>([]);
-  const token = useRecoilValue(tokenAtom);
   const [status, setStatus] = useState("idle");
 
   const getWallet = useCallback(async () => {
@@ -29,7 +26,7 @@ export default function Link() {
         url: `/api/users/${userId}/address`,
       })
       if (res.data) {
-        setWallet(res.data.wallet)
+        setWallet(res.data)
       }
     } catch (e) {
       console.log(e)
@@ -42,9 +39,6 @@ export default function Link() {
       const res = await axios({
         method: 'post',
         url: `/api/address`,
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
         data: {
           id: userId,
           address: address,
@@ -76,7 +70,7 @@ export default function Link() {
       })
       setStatus('idle')
     }
-  }, [userId, address, getWallet, token, toast])
+  }, [userId, address, getWallet, toast])
 
   useEffect(() => {
     getWallet();
@@ -100,7 +94,7 @@ export default function Link() {
       </Stack>
       <Stack>
         {
-          wallet.map((address, index) => (
+          wallet?.map((address, index) => (
             <li key={index}>{address.slice(0, 6)}...{address.slice(-4)}</li>
           ))
         }
