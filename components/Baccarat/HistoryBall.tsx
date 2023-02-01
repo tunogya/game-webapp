@@ -51,7 +51,7 @@ const HistoryBall: FC<HistoryBallProps> = (props) => {
     <Popover trigger={'hover'} openDelay={0} closeDelay={0}>
       <PopoverTrigger>
         <Stack w={'40px'} h={'40px'} bg={player ? 'white' : (banker ? 'red.200' : '')}
-               border={banker ? '' : '2px solid white'} cursor={'pointer'} _hover={{ border: '2px solid white' }}
+               border={banker ? '' : '2px solid white'} cursor={'pointer'}
                borderRadius={'full'} alignItems={"center"} justify={"center"}>
           <Text color={player ? 'black' : 'white'} fontWeight={'bold'}
                 textDecoration={(bPair || pPair) ? 'underline' : ''}>
