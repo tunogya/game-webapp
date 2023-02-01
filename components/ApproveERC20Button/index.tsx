@@ -9,7 +9,7 @@ type ApproveERC20ButtonProps = {
   token: string,
   owner: Address,
   spender: Address,
-  spendAmount: string,
+  spendAmount: BigNumber,
 }
 
 const ApproveERC20Button: FC<ApproveERC20ButtonProps> = (props: any) => {

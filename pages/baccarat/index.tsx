@@ -8,7 +8,7 @@ import {
   Tbody,
   Text,
   Wrap,
-  WrapItem, Link, Tooltip
+  WrapItem, Link
 } from "@chakra-ui/react";
 import TheHeader from "../../components/TheHeader";
 import HistoryBall, {ResultType} from "../../components/Baccarat/HistoryBall";
@@ -16,7 +16,7 @@ import {useEffect, useMemo, useState} from "react";
 import {isValidMotionProp, motion} from 'framer-motion'
 import Cheque, {BaccaratBetType} from "../../components/Baccarat/Cheque";
 import PickTokenModal from "../../components/Baccarat/PickTokenModal";
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilState} from "recoil";
 import {baccaratChequeAtom, ChequeType} from "../../state";
 import {
   Address,
@@ -44,7 +44,7 @@ const Baccarat = () => {
   const {address} = useAccount()
   const [pickedCheque, setPickedCheque] = useState(0);
   const [betType, setBetType] = useState<BaccaratBetType | null>(null);
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(BigNumber.from(0));
   const [cheque, setCheque] = useState<ChequeType | undefined>(undefined)
   const {data: balanceData} = useBalance({
     chainId: chain?.id,
@@ -52,15 +52,8 @@ const Baccarat = () => {
     token: cheque?.address === AddressZero ? undefined : cheque?.address,
     watch: true,
   });
-  const [balanceAndCheques, setBalanceAndCheques] = useState({
-    balance: 0,
-    cheques: 0,
-    total: 0
-  });
+  const [balanceAndCheques, setBalanceAndCheques] = useState(BigNumber.from(0));
   const [chequeTokenData] = useRecoilState(baccaratChequeAtom);
-  const spendAmount = useMemo(() => {
-    return BigNumber.from(value).mul(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toString()
-  }, [cheque, value])
   const baccaratContract = {
     address: BACCARAT_ADDRESS[chain?.id || 5],
     abi: BACCARAT_ABI
@@ -138,9 +131,9 @@ const Baccarat = () => {
   const {config: actionConfig} = usePrepareContractWrite({
     ...baccaratContract,
     functionName: 'action',
-    args: [cheque?.address, spendAmount, _betType],
+    args: [cheque?.address, value, _betType],
     overrides: {
-      value: cheque?.address === AddressZero ? BigNumber.from(spendAmount).sub(BigNumber.from(chequesData || 0)) : 0,
+      value: cheque?.address === AddressZero ? BigNumber.from(value).sub(BigNumber.from(chequesData || 0)) : 0,
       gasLimit: BigNumber.from(200_000),
     },
   })
@@ -169,7 +162,7 @@ const Baccarat = () => {
   useEffect(() => {
     if (actionStatus2 === 'success') {
       setBetType(null)
-      setValue(0)
+      setValue(BigNumber.from(0))
     }
   }, [actionStatus2])
 
@@ -181,48 +174,49 @@ const Baccarat = () => {
 
   useEffect(() => {
     if (balanceData && chequesData) {
-      setBalanceAndCheques({
-        balance: BigNumber.from(balanceData.value).div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber(),
-        cheques: BigNumber.from(chequesData).div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber(),
-        total: BigNumber.from(balanceData.value).add(BigNumber.from(chequesData)).div(BigNumber.from(10).pow(BigNumber.from(cheque?.decimals || 0))).toNumber()
-      })
+      setBalanceAndCheques(BigNumber.from(balanceData.value).add(BigNumber.from(chequesData)))
     }
   }, [balanceData, cheque?.decimals, chequesData])
 
   const colors = ['#81E6D9', 'purple', 'orange', '#22543D', '#E53E3E']
 
-  const cheques = [
-    {
-      value: 1, label: '1'
-    },
-    {
-      value: 10, label: '10'
-    },
-    {
-      value: 100, label: '100'
-    },
-    {
-      value: 1_000, label: '1K'
-    },
-    {
-      value: 10_000, label: '10K'
-    },
-    {
-      value: 100_000, label: '100K'
-    },
-    {
-      value: 1_000_000, label: '1M'
-    },
-    {
-      value: 10_000_000, label: '10M'
-    },
-    {
-      value: 100_000_000, label: '100M'
-    },
-    {
-      value: 1_000_000_000, label: '1B'
+  const cheques = useMemo(() => {
+    if (cheque) {
+      return [
+        {
+          label: '1', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals)))
+        },
+        {
+          label: '10', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 1)))
+        },
+        {
+          label: '100', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 2)))
+        },
+        {
+          label: '1K', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 3)))
+        },
+        {
+          label: '10K', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 4)))
+        },
+        {
+          label: '100K', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 5)))
+        },
+        {
+          label: '1M', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 6)))
+        },
+        {
+          label: '10M', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 7)))
+        },
+        {
+          label: '100M', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 8)))
+        },
+        {
+          label: '1B', value: BigNumber.from(1).mul(BigNumber.from(10).pow(BigNumber.from(cheque.decimals + 9)))
+        }
+      ]
     }
-  ]
+    return []
+  }, [cheque])
 
   const deal = (a: BaccaratBetType) => {
     if (!balanceData) {
@@ -230,18 +224,25 @@ const Baccarat = () => {
     }
 
     if (betType === null) {
-      if (Number(balanceData?.formatted) >= value + cheques[pickedCheque].value) {
+      if (BigNumber.from(balanceData.value).gte(BigNumber.from(value).add(BigNumber.from(cheques[pickedCheque].value)))) {
         setBetType(a);
-        setValue(value + cheques[pickedCheque].value);
+        setValue(BigNumber.from(value).add(BigNumber.from(cheques[pickedCheque].value)));
       }
       return
     }
     if (betType === a) {
-      if (Number(balanceData?.formatted) >= value + cheques[pickedCheque].value) {
-        setValue(value + cheques[pickedCheque].value);
+      if (BigNumber.from(balanceData.value).gte(BigNumber.from(value).add(BigNumber.from(cheques[pickedCheque].value)))) {
+        setValue(BigNumber.from(value).add(BigNumber.from(cheques[pickedCheque].value)));
       }
     }
   }
+
+  const formatValue = useMemo(() => {
+    if (cheque) {
+      return BigNumber.from(value).div(BigNumber.from(10).pow(cheque.decimals)).toNumber()
+    }
+    return 0
+  }, [cheque, value])
 
   const getLayout = () => {
     return (
@@ -250,7 +251,7 @@ const Baccarat = () => {
           <Stack w={'70%'} h={'full'} borderRight={'1px solid white'} textAlign={"center"} justify={"center"}
                  cursor={'pointer'} userSelect={'none'} spacing={0} onClick={() => deal(BaccaratBetType.Tie)}>
             {betType === BaccaratBetType.Tie ? (
-              <Cheque value={value} odds={9}/>
+              <Cheque value={formatValue} odds={9}/>
             ) : (
               <>
                 <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>T</Text>
@@ -261,7 +262,7 @@ const Baccarat = () => {
           <Stack w={'30%'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.SuperSix)}>
             {betType === BaccaratBetType.SuperSix ? (
-              <Cheque value={value} odds={13}/>
+              <Cheque value={formatValue} odds={13}/>
             ) : (
               <>
                 <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>6</Text>
@@ -276,7 +277,7 @@ const Baccarat = () => {
                  spacing={0}>
             {
               betType === BaccaratBetType.Banker ? (
-                <Cheque value={value} odds={1.95}/>
+                <Cheque value={formatValue} odds={1.95}/>
               ) : (
                 <>
                   <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'}>B</Text>
@@ -288,7 +289,7 @@ const Baccarat = () => {
           <Stack w={'30%'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.BankerPair)}>
             {betType === BaccaratBetType.BankerPair ? (
-              <Cheque value={value} odds={12}/>
+              <Cheque value={formatValue} odds={12}/>
             ) : (
               <>
                 <Text color={'red.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>B PAIR</Text>
@@ -302,7 +303,7 @@ const Baccarat = () => {
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.Player)}
                  spacing={0}>
             {betType === BaccaratBetType.Player ? (
-              <Cheque value={value} odds={2}/>
+              <Cheque value={formatValue} odds={2}/>
             ) : (
               <>
                 <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'}>P</Text>
@@ -313,7 +314,7 @@ const Baccarat = () => {
           <Stack w={'30%'} h={'full'} textAlign={"center"} justify={"center"} spacing={0}
                  cursor={'pointer'} userSelect={'none'} onClick={() => deal(BaccaratBetType.PlayerPair)}>
             {betType === BaccaratBetType.PlayerPair ? (
-              <Cheque value={value} odds={12}/>
+              <Cheque value={formatValue} odds={12}/>
             ) : (
               <>
                 <Text color={'blue.200'} fontWeight={'bold'} fontSize={'3xl'} lineHeight={'34px'}>P PAIR</Text>
@@ -331,8 +332,8 @@ const Baccarat = () => {
             <HStack spacing={'20px'}>
               {
                 cheques.filter((item) => {
-                  if (balanceAndCheques) {
-                    return item.value <= balanceAndCheques.total
+                  if (BigNumber.from(balanceAndCheques).gt(0)) {
+                    return BigNumber.from(item.value).lte(BigNumber.from(balanceAndCheques))
                   }
                   return false
                 }).map((item, index) => (
@@ -372,21 +373,18 @@ const Baccarat = () => {
                 )).slice(-5)
               }
             </HStack>
-            <Tooltip
-              label={`balance: ${balanceAndCheques.balance.toLocaleString()} ${cheque && cheque.symbol}, cheques: ${balanceAndCheques.cheques.toLocaleString()} ${cheque && cheque.symbol}`}>
-              <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'} cursor={'pointer'}>
-                {balanceAndCheques.total.toLocaleString()} {value > 0 && `- ${value.toLocaleString()}`}
-                {cheque && cheque.symbol}
-              </Text>
-            </Tooltip>
+            <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'} cursor={'pointer'}>
+              {BigNumber.from(balanceAndCheques).div(BigNumber.from(10).pow(cheque?.decimals || 0)).toNumber().toLocaleString()} {BigNumber.from(value).gt(0) && `- ${formatValue.toLocaleString()}`}
+              {cheque && cheque.symbol}
+            </Text>
           </Stack>
           <Spacer/>
           <HStack>
-            {cheque && cheque?.address !== AddressZero && address && (
-              <ApproveERC20Button token={cheque?.address} owner={address} spender={BACCARAT_ADDRESS[chain?.id || 5]}
-                                  spendAmount={spendAmount}/>
+            {chain && cheque && cheque?.address !== AddressZero && address && (
+              <ApproveERC20Button token={cheque?.address} owner={address} spender={BACCARAT_ADDRESS[chain.id]}
+                                  spendAmount={value}/>
             )}
-            {value > 0 && (
+            {BigNumber.from(value).gt(0) && (
               <Button variant={"solid"} colorScheme={'blue'}
                       isLoading={actionStatus === 'loading' || actionStatus2 === 'loading'}
                       loadingText={'Pending...'}
@@ -394,11 +392,11 @@ const Baccarat = () => {
                 Action
               </Button>
             )}
-            {value > 0 && (
+            {BigNumber.from(value).gt(0) && (
               <Button variant={"solid"} colorScheme={'red'}
                       onClick={() => {
                         setBetType(null)
-                        setValue(0)
+                        setValue(BigNumber.from(0))
                       }}>
                 Clear
               </Button>
@@ -500,7 +498,7 @@ const Baccarat = () => {
   return (
     <Stack w={'full'} minH={'100vh'} spacing={0} overflow={'scroll'} bg={"blue.600"} align={"center"}>
       <TheHeader/>
-      <Stack p={[2, 4, 6, 8]} w={['full', 'container.sm']} spacing={[4,6,8]} justify={"center"} align={"center"}>
+      <Stack p={[2, 4, 6, 8]} w={['full', 'container.sm']} spacing={[4, 6, 8]} justify={"center"} align={"center"}>
         <HStack spacing={'100px'} w={'full'} justify={['space-between', 'center']}>
           <Text color={'white'} fontWeight={'bold'} fontSize={['md', 'xl', '2xl']}>
             Baccarat
