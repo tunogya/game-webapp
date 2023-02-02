@@ -381,7 +381,7 @@ const Baccarat = () => {
               }
             </HStack>
             <Text fontSize={'2xl'} color={'blue.200'} fontWeight={'bold'} cursor={'pointer'}>
-              {BigNumber.from(balanceAndCheques).div(BigNumber.from(10).pow(cheque?.decimals || 0)).toNumber().toLocaleString()} {BigNumber.from(value).gt(0) && `- ${formatValue.toLocaleString()}`}
+              {(BigNumber.from(balanceAndCheques).div(BigNumber.from(10).pow(cheque ? cheque.decimals - 6 : 0)).toNumber() / 1_000_000).toLocaleString()} {BigNumber.from(value).gt(0) && `- ${formatValue.toLocaleString()}`}
               {cheque && cheque.symbol}
             </Text>
           </Stack>
