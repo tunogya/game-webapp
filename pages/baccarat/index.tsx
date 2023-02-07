@@ -334,7 +334,7 @@ const Baccarat = () => {
             )}
           </Stack>
         </HStack>
-        <Stack px={2} h={'240px'} alignItems={"center"} p={2}>
+        <Stack px={2} h={'320px'} alignItems={"center"} p={2}>
           <HStack justifyContent={"space-between"} w={'full'} spacing={0}>
             <Text fontWeight={'bold'} color={'blue.200'}>My Cheques</Text>
             <PickTokenModal/>
@@ -472,20 +472,20 @@ const Baccarat = () => {
   return (
     <Stack w={'full'} minH={'100vh'} spacing={0} overflow={'scroll'} bg={"blue.600"} align={"center"}>
       <TheHeader/>
-      <Stack p={[2, 4, 6, 8]} w={['full', 'container.sm']} spacing={[4, 6, 8]} justify={"center"} align={"center"}>
-        <HStack spacing={'100px'} w={'full'} justify={['space-between', 'center']}>
+      <Stack p={[2, 4, 6, 8]} w={['full', 'container.sm']} spacing={4} justify={"center"} align={"center"}>
+        <HStack maxW={'container.sm'} w={'full'} justify={'space-between'}>
           <Text color={'white'} fontWeight={'bold'} fontSize={['md', 'xl', '2xl']}>
             Baccarat
           </Text>
           {suttleButton()}
         </HStack>
+        {getActions()}
+        {getLayout()}
+        {getHistory()}
         <Text color={'blue.200'} fontSize={'xs'}>Contract: <Link isExternal textDecoration={'underline'}
                                                                  href={contractLink}>
           {BACCARAT_ADDRESS[chain?.id || 5]}
         </Link></Text>
-        {getLayout()}
-        {getActions()}
-        {getHistory()}
         <Stack h={4}/>
       </Stack>
     </Stack>
