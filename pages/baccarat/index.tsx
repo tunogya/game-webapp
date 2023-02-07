@@ -33,7 +33,6 @@ import {BACCARAT_ADDRESS} from "../../constant/address";
 import {BigNumber, ethers} from "ethers";
 import {BACCARAT_ABI} from "../../constant/abi";
 import LayoutItem from "../../components/Baccarat/LayoutItem";
-import MiniPocker from "../../components/Baccarat/MiniPocker";
 
 const ChakraBox = chakra(motion.div, {
   shouldForwardProp: (prop) => isValidMotionProp(prop) || shouldForwardProp(prop),
@@ -458,38 +457,6 @@ const Baccarat = () => {
     )
   }
 
-  const getLastHands = () => {
-    return (
-      <HStack spacing={4}>
-        <HStack>
-          {
-            [
-              results[results.length - 1]?.bankerHands1 || 0,
-              results[results.length - 1]?.bankerHands2 || 0,
-              results[results.length - 1]?.bankerHands3 || 0,
-            ].map((item, index) => (
-              <MiniPocker id={item} key={index}/>
-            ))
-          }
-        </HStack>
-        <Text color={'red.200'} fontWeight={'bold'}>B</Text>
-        <Stack w={'1px'} h={'40px'} bg={'white'}></Stack>
-        <Text color={'blue.200'} fontWeight={'bold'}>P</Text>
-        <HStack>
-          {
-            [
-              results[results.length - 1]?.playerHands1 || 0,
-              results[results.length - 1]?.playerHands2 || 0,
-              results[results.length - 1]?.playerHands3 || 0,
-            ].map((item, index) => (
-              <MiniPocker id={item} key={index}/>
-            ))
-          }
-        </HStack>
-      </HStack>
-    )
-  }
-
   const suttleButton = () => {
     return (
       <Button variant={"solid"} w={'120px'} colorScheme={'blue'}
@@ -512,7 +479,6 @@ const Baccarat = () => {
           </Text>
           {suttleButton()}
         </HStack>
-        {getLastHands()}
         <Text color={'blue.200'} fontSize={'xs'}>Contract: <Link isExternal textDecoration={'underline'}
                                                                  href={contractLink}>
           {BACCARAT_ADDRESS[chain?.id || 5]}
