@@ -38,7 +38,7 @@
     "@aws-sdk/lib-dynamodb": "^3.245.0",
     "axios": "^1.2.2",
     "jsonwebtoken": "^9.0.0",
-    "node-jose": "^2.1.1",
+    "node-jose": "^2.2.0",
     "telegraf": "^4.11.2"
   }
 }
